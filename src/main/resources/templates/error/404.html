@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html th:replace="~{_layout :: layout(~{::body})}">
+<body>
+    <div th:fragment="content">
+    <h1 class="display-1">404</h1>
+    <h2>Página no encontrada</h2>
+    <p class="lead">Lo sentimos, la página que buscas no existe.</p>
+    <p th:if="${mensajeError}" th:text="${mensajeError}" class="text-muted"></p>
+    <a th:href="@{/}" class="btn btn-primary">Volver al Inicio</a>
+</div>
+</div>
+</body>
+</html>

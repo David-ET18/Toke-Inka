@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html th:replace="~{_layout :: layout(~{::body})}">
+<body>
+    <div th:fragment="content">
+    <h1 class="display-1">Error</h1>
+    <h2>Oops, algo salió mal.</h2>
+    <p class="lead" th:text="${mensajeError}">Mensaje de error genérico.</p>
+    <a th:href="@{/}" class="btn btn-primary">Volver al Inicio</a>
+</div>
+</body>
+</html>

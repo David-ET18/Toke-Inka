@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:with="pageTitle='Tu Carrito de Compras'"
+      th:insert="~{_layout :: html(content=~{::content})}">
+
+<!-- El <body> se ignora, pero la estructura debe ser un documento HTML válido -->
+<body>
+
+<!-- Define el fragmento que se pasará como 'content' al layout -->
+<th:block th:fragment="content">
+    <div class="container py-4">
+
+        <!-- Título y Botón para Seguir Comprando -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="fw-bold">Tu Carrito de Compras</h1>
+            <a th:href="@{/productos}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Seguir Comprando
+            </a>
+        </div>
+
+        <!-- Vista para carrito vacío -->
+        <div th:if="${carrito == null or #lists.isEmpty(carrito.items)}" class="text-center py-5">
+            <div class="card shadow-sm border-0" style="max-width: 500px; margin: auto;">
+                <div class="card-body p-5">
+                    <i class="bi bi-cart-x" style="font-size: 5rem; color: #6c757d;"></i>
+                    <h2 class="card-title mt-3">Tu carrito está vacío</h2>
+                    <p class="card-text text-muted">Añade productos para empezar a comprar.</p>
+                    <a th:href="@{/productos}" class="btn btn-primary mt-3">Explorar Productos</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vista para carrito con items -->
+        <div th:if="${carrito != null and not #lists.isEmpty(carrito.items)}" class="row g-5">
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-baseline border-bottom pb-2 mb-3">
+                    <h4 class="mb-0">Productos</h4>
+                    <span class="text-muted" th:text="|${#lists.size(carrito.items)} items|"></span>
+                </div>
+                <div th:each="item : ${carrito.items}" class="card mb-3 border-0 shadow-sm cart-item-row" th:data-product-id="${item.productoId}" th:data-talla-id="${item.tallaId}">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 text-center">
+                                <img th:src="${item.urlImagen}" style="width: 100px; height: 100px; object-fit: cover;" class="img-fluid rounded">
+                            </div>
+                            <div class="col-md-4">
+                                <h5 class="mb-1" th:text="${item.nombreProducto}"></h5>
+                                <p class="text-muted small mb-1" th:text="|Talla: ${item.nombreTalla}|"></p>
+                                <p class="text-muted small" th:text="|Precio unitario: S/ ${#numbers.formatDecimal(item.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group" style="max-width: 150px;">
+                                    <button class="btn btn-outline-secondary btn-minus" type="button">-</button>
+                                    <input type="text" class="form-control text-center quantity-input fw-bold" th:value="${item.cantidad}" readonly>
+                                    <button class="btn btn-outline-secondary btn-plus" type="button">+</button>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <p class="fw-bold fs-5 mb-2 item-subtotal" th:text="|S/ ${#numbers.formatDecimal(item.getSubtotal(), 1, 'COMMA', 2, 'POINT')}|"></p>
+                                <button class="btn btn-sm btn-link text-danger btn-delete">
+                                    <i class="bi bi-trash"></i> Quitar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 position-sticky" style="top: 2rem;">
+                    <div class="card-body">
+                        <h4 class="card-title">Resumen del Pedido</h4>
+                        <hr>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item d-flex justify-content-between"><span>Subtotal</span><span id="subtotal-summary" th:text="|S/ ${#numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}|"></span></li>
+                            <li class="list-group-item d-flex justify-content-between"><span>Envío</span><span>Gratis</span></li>
+                            <li class="list-group-item d-flex justify-content-between fw-bold fs-5 border-top pt-3"><span>Total</span><strong id="grand-total" th:text="|S/ ${#numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}|"></strong></li>
+                        </ul>
+                        <div class="d-grid"><a th:href="@{/checkout}" class="btn btn-primary btn-lg">Proceder al Pago</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</html>

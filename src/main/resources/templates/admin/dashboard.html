@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <!-- Este dashboard no usa el layout general para poder tener su propia estructura, como un menú lateral -->
+    <div class="d-flex">
+        <!-- Menú Lateral -->
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; min-height: 100vh;">
+            <a th:href="@{/admin/dashboard}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <span class="fs-4">Admin Toke Inca</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" aria-current="page"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-white"><i class="bi bi-box-seam"></i> Productos</a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-white"><i class="bi bi-receipt"></i> Pedidos</a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-white"><i class="bi bi-people"></i> Usuarios</a>
+                </li>
+            </ul>
+            <hr>
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle fs-4 me-2"></i>
+                    <strong><span sec:authentication="name"></span></strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" th:href="@{/}">Volver a la Tienda</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                         <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="dropdown-item">Cerrar Sesión</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Contenido Principal -->
+        <div class="container-fluid p-4" th:object="${estadisticas}">
+            <h1>Dashboard</h1>
+            <p class="lead">Resumen general de la actividad de la tienda.</p>
+
+            <!-- Tarjetas de Estadísticas -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body">
+                            <h5 class="card-title">Ingresos Totales</h5>
+                            <p class="card-text fs-4" th:text="|S/ ${#numbers.formatDecimal(estadisticas.ingresosTotales, 1, 'COMMA', 2, 'POINT')}|">S/ 0.00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <h5 class="card-title">Pedidos Totales</h5>
+                            <p class="card-text fs-4" th:text="*{totalPedidos}">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-info">
+                        <div class="card-body">
+                            <h5 class="card-title">Usuarios Registrados</h5>
+                            <p class="card-text fs-4" th:text="*{totalUsuarios}">0</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="col-md-3">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body">
+                            <h5 class="card-title">Productos Totales</h5>
+                            <p class="card-text fs-4" th:text="*{totalProductos}">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Productos más vendidos -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>Productos Más Vendidos</h4>
+                </div>
+                <div class="card-body">
+                     <ul class="list-group list-group-flush">
+                        <li th:each="producto : *{productosMasVendidos}" class="list-group-item d-flex align-items-center">
+                            <img th:src="${producto.urlImagen}" style="width: 50px; height: 50px; object-fit: cover;" class="me-3 rounded">
+                            <span th:text="${producto.nombre}">Nombre del Producto</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

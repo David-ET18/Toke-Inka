@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="html(content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <!-- La variable 'pageTitle' la recibe de la vista que llama -->
+    <title th:text="${pageTitle} ?: 'Toke Inca'"></title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+ <style>
+        body { font-family: 'Montserrat', sans-serif; }
+        .navbar-brand { font-weight: bold; }
+        .product-card img { height: 300px; object-fit: cover; }
+        .footer { background-color: #f8f9fa; }
+
+        /* ===== ESTILOS PARA EL BOTÓN DE TOUR Y EL HIGHLIGHT ===== */
+
+        /* El botón flotante */
+        .tour-chatbox-button {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #0d6efd; /* Color primario de Bootstrap */
+            color: white;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.2s ease-in-out;
+        }
+        .tour-chatbox-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* El efecto de resaltado para el elemento del tour */
+        .tour-highlight {
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.5);
+            border-radius: .375rem; /* Borde redondeado de Bootstrap */
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+    </style>
+<body>
+    <header th:replace="~{fragments/_header :: header}"></header>
+
+    <main class="container my-4">
+        <!-- 
+            ESTA ES LA LÍNEA CORREGIDA Y MÁS IMPORTANTE.
+            Usa th:replace (o th:insert) para procesar el fragmento 'content' que se pasó
+            como parámetro a este fragmento 'html'.
+        -->
+        <th:block th:replace="${content}" />
+    </main>
+
+    <footer th:replace="~{fragments/_footer :: footer}"></footer>
+        <div id="tour-chatbox-button" class="tour-chatbox-button">
+          <i class="bi bi-question-lg"></i>
+        </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/carrito-dinamico.js}"></script>
+</body>
+</html>

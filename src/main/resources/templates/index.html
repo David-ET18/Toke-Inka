@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{_layout :: html(content=~{::content})}">
+<body>
+    <div th:fragment="content">
+        <div id="welcome-banner" class="p-5 mb-4 bg-light rounded-3 text-center">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold">Bienvenido a Toke Inca</h1>
+                <p class="fs-4">La moda que inspira, el estilo que te define. Descubre nuestras últimas colecciones.</p>
+            </div>
+        </div>
+        
+        <!-- Alerta de pedido exitoso -->
+        <div th:if="${pedidoExitoso}" class="alert alert-success" role="alert" th:text="${pedidoExitoso}"></div>
+
+        <h2  id="product-section-title">Nuestros Productos</h2>
+        <div id="product-list-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            <div class="col" th:each="producto : ${productos}">
+                <div class="card h-100 shadow-sm product-card">
+                    <img th:src="${producto.urlImagen}" class="card-img-top" alt="Imagen de producto">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${producto.nombre}">Nombre Producto</h5>
+                        <p class="card-text text-muted" th:text="${producto.nombreCategoria}">Categoría</p>
+                        <p class="card-text fs-5 fw-bold" th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}|">S/ 0.00</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                         <a th:href="@{/producto/{id}(id=${producto.id})}" class="btn btn-primary w-100">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
