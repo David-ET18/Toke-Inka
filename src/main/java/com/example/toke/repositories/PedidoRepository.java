@@ -11,4 +11,5 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     // Busca todos los pedidos de un usuario específico, ordenados por fecha descendente
     // Ideal para el historial de pedidos del cliente.
     List<Pedido> findByUsuarioIdOrderByFechaPedidoDesc(Long idUsuario);
+    List<Pedido> findAllByOrderByFechaPedidoDesc();
 }

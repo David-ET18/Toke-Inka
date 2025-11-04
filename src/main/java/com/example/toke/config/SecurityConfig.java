@@ -37,6 +37,7 @@ public class SecurityConfig {
             .requestMatchers("/", "/productos", "/producto/**").permitAll()
             .requestMatchers("/register", "/login", "/logout").permitAll()
 
+            
             // --- REGLAS PARA CLIENTES ---
             // Solo usuarios con rol CLIENTE pueden acceder a estas rutas.
             // NOTA: Spring Security usa hasRole(), que espera el nombre sin el prefijo "ROLE_".
@@ -45,6 +46,7 @@ public class SecurityConfig {
             // --- REGLAS PARA ADMINISTRADORES ---
             .requestMatchers("/admin/**").hasRole("ADMIN")
 
+            
             // --- REGLA POR DEFECTO ---
             // Cualquier otra petición que no coincida con las anteriores, requiere autenticación.
             .anyRequest().authenticated()

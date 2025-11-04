@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        body { font-family: 'Helvetica', sans-serif; font-size: 12px; color: #333; }
+        .container { width: 100%; margin: 0 auto; }
+        .header h1 { margin: 0; color: #000; }
+        .invoice-details table, .items-table { width: 100%; border-collapse: collapse; }
+        .invoice-details td { padding: 5px; }
+        .items-table th, .items-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .items-table th { background-color: #f2f2f2; }
+        .text-right { text-align: right; }
+        .total { margin-top: 20px; text-align: right; }
+        .total h3 { margin: 0; }
+        .footer { margin-top: 50px; text-align: center; font-size: 10px; color: #777; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <table style="width: 100%; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
+            <tr>
+                <td style="width: 50%;">
+                    <h1>Toke Inca</h1>
+                    <!-- CORRECCIÓN: Se usa <br /> en lugar de <br> -->
+                    <p>RUC: 20123456789<br />
+                    Av. Principal 123, Lima, Perú</p>
+                </td>
+                <td style="width: 50%; text-align: right;">
+                    <h2>BOLETA DE VENTA</h2>
+                     <!-- LÍNEA CORREGIDA -->
+                    <p>
+                        <p>
+                            <strong>N°:</strong>
+                            <span th:text="|B001-${#numbers.formatInteger(pedido.id, 8)}|"></span>
+                        </p>
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+        <div class="invoice-details" style="margin-top: 20px; margin-bottom: 30px;">
+            <table>
+                <tr>
+                    <td style="width: 100px;"><strong>Cliente:</strong></td>
+                    <td th:text="${pedido.nombreCliente}"></td>
+                </tr>
+                <tr>
+                    <td><strong>Dirección:</strong></td>
+                    <td th:text="${pedido.direccionEnvio}"></td>
+                </tr>
+                <tr>
+                    <td><strong>Fecha de Emisión:</strong></td>
+                    <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}"></td>
+                </tr>
+            </table>
+        </div>
+
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th style="width: 60px;">Cantidad</th>
+                    <th class="text-right" style="width: 100px;">Precio Unit.</th>
+                    <th class="text-right" style="width: 100px;">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="detalle : ${pedido.detalles}">
+                    <td th:text="${detalle.nombreProducto + ' (Talla: ' + detalle.nombreTalla + ')'}"></td>
+                    <td th:text="${detalle.cantidad}" style="text-align: center;"></td>
+                    <td class="text-right" th:text="|S/ ${#numbers.formatDecimal(detalle.precioUnitario, 1, 2, 'COMMA')}|"></td>
+                    <td class="text-right" th:text="|S/ ${#numbers.formatDecimal(detalle.cantidad * detalle.precioUnitario, 1, 2, 'COMMA')}|"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total">
+            <h3>TOTAL: <span th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 2, 'COMMA')}|"></span></h3>
+        </div>
+
+        <div class="footer">
+            <hr /> <!-- CORRECCIÓN: Se usa <hr /> en lugar de <hr> -->
+            <p>Gracias por su compra en Toke Inca.</p>
+        </div>
+    </div>
+</body>
+</html>

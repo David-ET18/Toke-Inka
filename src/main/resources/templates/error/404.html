@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html th:replace="~{_layout :: layout(~{::body})}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{_layout :: html(content=~{::content})}">
+
 <body>
     <div th:fragment="content">
     <h1 class="display-1">404</h1>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:with="pageTitle='Detalle del Pedido'"
+      th:insert="~{_layout :: html(content=~{::content})}">
+
+<th:block th:fragment="content">
+    <div class="container py-4" th:object="${pedido}">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 th:text="|Detalle del Pedido #${pedido.id}|"></h1>
+            <a th:href="@{/admin/pedidos}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver a la lista</a>
+        </div>
+        
+        <div th:if="${mensaje}" class="alert alert-success mt-3" th:text="${mensaje}"></div>
+
+        <div class="row g-4 mt-3">
+            <!-- Columna de Detalles y Estado -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header">Detalles Generales</div>
+                    <div class="card-body">
+                        <p><strong>ID Pedido:</strong> <span th:text="*{id}"></span></p>
+                        <p><strong>Fecha:</strong> <span th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}"></span></p>
+                        <p><strong>Total:</strong> <span class="fw-bold fs-5" th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}|"></span></p>
+                        <hr>
+                        <form th:action="@{/admin/pedidos/actualizar-estado}" method="post">
+                            <input type="hidden" name="pedidoId" th:value="*{id}" />
+                            <div class="mb-3">
+                                <label for="estado" class="form-label fw-bold">Actualizar Estado</label>
+                                <div class="input-group">
+                                    <select id="estado" name="estado" class="form-select">
+                                        <option th:each="est : ${estados}"
+                                                th:value="${est}"
+                                                th:text="${est}"
+                                                th:selected="${est == pedido.estado}"></option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header">Cliente y Envío</div>
+                    <div class="card-body">
+                        <p><strong>Cliente:</strong> <span th:text="*{nombreCliente}"></span></p>
+                        <p><strong>Email:</strong> <span th:text="*{emailCliente}"></span></p>
+                        <p><strong>Dirección:</strong> <span th:text="*{direccionEnvio}"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna de Productos -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header">Productos en el Pedido</div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li th:each="detalle : *{detalles}" class="list-group-item d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0" th:text="${detalle.nombreProducto}"></h6>
+                                    <small class="text-muted" th:text="|Talla: ${detalle.nombreTalla}|"></small>
+                                </div>
+                                <div class="text-end">
+                                    <span th:text="|${detalle.cantidad} x S/ ${#numbers.formatDecimal(detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></span><br>
+                                    <span class="fw-bold" th:text="|S/ ${#numbers.formatDecimal(detalle.cantidad * detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>

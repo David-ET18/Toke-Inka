@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:with="pageTitle='Detalle del Pedido'"
+      th:insert="~{_layout :: html(content=~{::content})}">
+
+<th:block th:fragment="content">
+    <div class="container py-5">
+        <div class="row">
+            
+            <!-- INICIO: Columna de Navegación Lateral (Copiada aquí para consistencia) -->
+            <div class="col-lg-3">
+                <div class="mb-4">
+                    <h4 class="fw-bold">Mi Cuenta</h4>
+                    <p class="text-muted">Gestiona tu información y pedidos.</p>
+                </div>
+                <div class="list-group shadow-sm account-nav">
+                    <a th:href="@{/mi-cuenta}" class="list-group-item list-group-item-action py-3" 
+                       th:classappend="${requestURI == '/mi-cuenta' ? 'active' : ''}">
+                       <i class="bi bi-person-fill me-2"></i> Mi Perfil
+                    </a>
+                    <a th:href="@{/mis-pedidos}" class="list-group-item list-group-item-action py-3"
+                       th:classappend="${#strings.startsWith(requestURI, '/mis-pedidos') ? 'active' : ''}">
+                       <i class="bi bi-receipt me-2"></i> Mis Pedidos
+                    </a>
+                    <a th:href="@{/mis-pedidos/{id}/boleta(id=*{id})}" class="btn btn-sm btn-danger mb-3 py-3 me-2" target="_blank">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> Descargar Boleta (PDF)
+                    </a>
+                </div>
+            </div>
+            <!-- FIN: Columna de Navegación Lateral -->
+
+            <!-- Columna de Contenido Principal -->
+            <div class="col-lg-9 account-content">
+                <div class="card shadow-sm" th:object="${pedido}">
+                    <div class="card-header bg-light py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0" th:text="|Detalle del Pedido #${pedido.id}|"></h3>
+                            <a th:href="@{/mis-pedidos}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver a Mis Pedidos</a>
+                        </div>
+                    </div>
+                    <div class="card-body p-4 p-md-5">
+                        <!-- Fila de Resumen -->
+                        <div class="row pb-4 border-bottom mb-4">
+                            <div class="col-md-4">
+                                <h5>Fecha del Pedido</h5>
+                                <p class="text-muted" th:text="${#temporals.format(pedido.fechaPedido, 'dd MMMM yyyy, HH:mm')}"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <h5>Estado</h5>
+                                <p><span class="badge fs-6" th:text="*{estado}" 
+                                      th:classappend="${pedido.estado.name() == 'PENDIENTE' ? 'bg-secondary' : 
+                                                       (pedido.estado.name() == 'PAGADO' ? 'bg-primary' : 
+                                                       (pedido.estado.name() == 'ENVIADO' ? 'bg-info' : 
+                                                       (pedido.estado.name() == 'ENTREGADO' ? 'bg-success' : 'bg-danger')))}">
+                                </span></p>
+                            </div>
+                            <div class="col-md-4">
+                                <h5>Total Pagado</h5>
+                                <p class="fw-bold fs-5" th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}|"></p>
+                            </div>
+                        </div>
+
+                        <!-- Fila de Productos y Envío -->
+                        <div class="row g-5">
+                            <div class="col-lg-7">
+                                <h5 class="mb-3">Productos</h5>
+                                <ul class="list-group list-group-flush">
+                                    <li th:each="detalle : *{detalles}" class="list-group-item d-flex align-items-center px-0">
+                                        <img th:src="@{${detalle.urlImagen}}" width="70" height="70" class="rounded me-3" style="object-fit: cover;">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0" th:text="${detalle.nombreProducto}"></h6>
+                                            <small class="text-muted" th:text="|Talla: ${detalle.nombreTalla}|"></small>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="text-muted" th:text="|${detalle.cantidad} x S/ ${#numbers.formatDecimal(detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-5">
+                                 <h5 class="mb-3">Dirección de Envío</h5>
+                                 <div class="card bg-light border">
+                                     <div class="card-body">
+                                         <p class="mb-0" th:text="*{direccionEnvio}"></p>
+                                     </div>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</html>

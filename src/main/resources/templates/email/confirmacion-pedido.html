@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Estilos inline para máxima compatibilidad con clientes de correo */
+        body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; }
+        .header { text-align: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+        .content { padding: 20px 0; }
+        .footer { text-align: center; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #777; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>¡Gracias por tu compra en Toke Inca!</h2>
+        </div>
+        <div class="content">
+            <p th:text="|Hola ${pedido.nombreCliente},|">Hola Cliente,</p>
+            <p>Hemos recibido tu pedido y ya estamos preparándolo. Adjunto encontrarás la boleta de tu compra en formato PDF.</p>
+            <h3>Resumen de tu Pedido</h3>
+            <p>
+                <strong>Número de Pedido:</strong> <span th:text="${pedido.id}"></span><br>
+                <strong>Fecha:</strong> <span th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}"></span><br>
+                <strong>Total:</strong> <strong th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 2, 'COMMA')}|"></span>
+            </p>
+            <p>Puedes ver los detalles de tu pedido en cualquier momento desde la sección "Mis Pedidos" en nuestra web.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 Toke Inca. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

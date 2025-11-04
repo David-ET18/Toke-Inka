@@ -1,34 +1,35 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-</head>
-<body>
-    <!-- Este dashboard no usa el layout general para poder tener su propia estructura, como un menú lateral -->
-    <div class="d-flex">
-        <!-- Menú Lateral -->
-        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; min-height: 100vh;">
-            <a th:href="@{/admin/dashboard}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <span class="fs-4">Admin Toke Inca</span>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:insert="~{_layout :: html(content=~{::content})}">
+
+<th:block th:fragment="content">
+    <div class="container py-4">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Panel de Administración</h1>
+            <span class="badge bg-primary fs-6">Dashboard</span>
+        </div>
+        
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <!-- CORREGIDO AQUÍ -->
+            <a class="nav-link" th.href="@{/admin/dashboard}" th:classappend="${requestURI == '/admin/dashboard' ? 'active' : ''}">
+                <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <hr>
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a href="#" class="nav-link active" aria-current="page"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link text-white"><i class="bi bi-box-seam"></i> Productos</a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link text-white"><i class="bi bi-receipt"></i> Pedidos</a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link text-white"><i class="bi bi-people"></i> Usuarios</a>
-                </li>
-            </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/productos}"
+                    th:classappend="${requestURI.startsWith('/admin/productos') ? 'active' : ''}">
+                    <i class="bi bi-box-seam"></i> Productos
+                </a>
+            </li>
+             <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/pedidos}"
+                    th:classappend="${requestURI.startsWith('/admin/pedidos') ? 'active' : ''}">
+                    <i class="bi bi-receipt"></i> Pedidos
+                </a>
+            </li>
+        </ul>
             <hr>
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -105,6 +106,5 @@
         </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+</th:block>
 </html>

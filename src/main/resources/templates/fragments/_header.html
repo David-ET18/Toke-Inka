@@ -46,8 +46,8 @@
                                 <span sec:authentication="name"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Mi Cuenta</a></li>
-                                <li><a class="dropdown-item" href="#">Mis Pedidos</a></li>
+                                <li><a class="dropdown-item" th:href="@{/mi-cuenta}">Mi Perfil</a></li>
+                                <li><a class="dropdown-item" th:href="@{/mis-pedidos}">Mis Pedidos</a></li>
                                 <!-- Visible solo para ADMIN -->
                                 <li sec:authorize="hasRole('ADMIN')">
                                     <hr class="dropdown-divider">

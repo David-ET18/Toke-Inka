@@ -96,7 +96,7 @@ public class DataLoader implements CommandLineRunner {
             p1.setDescripcion("Una camiseta de algodón pima con un diseño inspirado en la sutiles del mar. Perfecta para un look casual y cultural.");
             p1.setPrecio(new BigDecimal("79.90"));
             p1.setCategoria(catCamisetas);
-            p1.setUrlImagen("/images/camisero_azul.jpg");
+            p1.setUrlImagen("../../../resources/images/camisero_azul.jpg");
             productoRepository.save(p1);
             crearInventario(p1, tallaS, 20);
             crearInventario(p1, tallaM, 25);
@@ -133,7 +133,7 @@ public class DataLoader implements CommandLineRunner {
             p4.setDescripcion("Diseño sutil y elegante que evoca una comodidad única. Fabricada con algodón orgánico suave al tacto.");
             p4.setPrecio(new BigDecimal("85.00"));
             p4.setCategoria(catCamisetas);
-            p4.setUrlImagen("/images/camisero_beige.jpg");
+            p4.setUrlImagen("../src/main/resource/static/imagesg");
             productoRepository.save(p4);
             crearInventario(p4, tallaS, 30);
             crearInventario(p4, tallaM, 30);

@@ -63,7 +63,17 @@
     <artifactId>jakarta.validation-api</artifactId>
     <version>3.0.2</version>
 </dependency>
-
+<!--Implementación de boletas pdf-->
+<dependency>
+    <groupId>com.openhtmltopdf</groupId>
+    <artifactId>openhtmltopdf-pdfbox</artifactId>
+    <version>1.0.10</version>
+</dependency>
+<!-- Spring mail para el envio por correo electrónico-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
     <!-- DevTools para reinicios automáticos y live-reload (muy útil en desarrollo) -->
     <dependency>
         <groupId>org.springframework.boot</groupId>

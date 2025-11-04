@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:with="pageTitle='Mis Pedidos'"
+      th:insert="~{_layout :: html(content=~{::content})}">
+
+<th:block th:fragment="content">
+    <div class="container py-5">
+        <div class="row">
+            
+            <!-- INICIO: Columna de Navegación Lateral (Copiada aquí) -->
+            <div class="col-lg-3">
+                <div class="mb-4">
+                    <h4 class="fw-bold">Mi Cuenta</h4>
+                    <p class="text-muted">Gestiona tu información y pedidos.</p>
+                </div>
+                <div class="list-group shadow-sm account-nav">
+                    <a th:href="@{/mi-cuenta}" class="list-group-item list-group-item-action py-3" 
+                       th:classappend="${requestURI == '/mi-cuenta' ? 'active' : ''}">
+                       <i class="bi bi-person-fill me-2"></i> Mi Perfil
+                    </a>
+                    <a th:href="@{/mis-pedidos}" class="list-group-item list-group-item-action py-3"
+                       th:classappend="${#strings.startsWith(requestURI, '/mis-pedidos') ? 'active' : ''}">
+                       <i class="bi bi-receipt me-2"></i> Mis Pedidos
+                    </a>
+                </div>
+            </div>
+            <!-- FIN: Columna de Navegación Lateral -->
+
+            <!-- Columna de Contenido Principal -->
+            <div class="col-lg-9 account-content">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="card-title mb-4">Historial de Pedidos</h3>
+
+                        <div th:if="${#lists.isEmpty(pedidos)}" class="alert alert-info text-center">
+                            <p class="mb-0">No has realizado ningún pedido todavía.</p>
+                        </div>
+                        
+                        <div th:unless="${#lists.isEmpty(pedidos)}" class="list-group">
+                            <a th:each="pedido : ${pedidos}" th:href="@{/mis-pedidos/{id}(id=${pedido.id})}" class="list-group-item list-group-item-action">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3">
+                                        <h6 class="mb-0" th:text="'Pedido #' + ${pedido.id}"></h6>
+                                        <small class="text-muted" th:text="${#temporals.format(pedido.fechaPedido, 'dd MMMM, yyyy')}"></small>
+                                    </div>
+                                    <div class="col-md-3 text-md-center">
+                                        <strong>Total: </strong>
+                                        <span th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}|"></span>
+                                    </div>
+                                    <div class="col-md-3 text-md-center">
+                                         <strong>Estado: </strong>
+                                         <span class="badge" th:text="${pedido.estado}"
+                                              th:classappend="${pedido.estado.name() == 'PENDIENTE' ? 'bg-secondary' : 
+                                                               (pedido.estado.name() == 'PAGADO' ? 'bg-primary' : 
+                                                               (pedido.estado.name() == 'ENVIADO' ? 'bg-info' : 
+                                                               (pedido.estado.name() == 'ENTREGADO' ? 'bg-success' : 'bg-danger')))}">
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 text-md-end">
+                                        <span class="text-primary">Ver Detalle <i class="bi bi-arrow-right-short"></i></span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</html>
