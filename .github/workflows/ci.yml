@@ -1,44 +1,23 @@
-# Nombre del workflow que aparecerá en la pestaña "Actions" de GitHub.
 name: Toke Inca CI - Build and Test
 
-# Define los eventos que activarán este workflow.
 on:
-  # Se ejecuta cuando se sube código a la rama 'main'.
   push:
     branches: [ "main" ]
-  # Se ejecuta cuando se crea o actualiza un Pull Request que apunta a 'main'.
   pull_request:
     branches: [ "main" ]
 
-# Define los trabajos (jobs) que se ejecutarán. Podemos tener varios, pero empezaremos con uno.
 jobs:
-  # Nombre de nuestro trabajo. Puede ser cualquier cosa.
   build:
-    # El tipo de máquina virtual que usará el robot. 'ubuntu-latest' es la estándar y gratuita.
     runs-on: ubuntu-latest
-
-    # La secuencia de pasos que el robot debe seguir.
     steps:
-      # PASO 1: Obtener el código del repositorio.
-      # 'uses' indica que estamos usando una acción pre-construida por la comunidad.
-      - name: Checkout repository
+      - name: Checkout repository code
         uses: actions/checkout@v4
 
-      # PASO 2: Configurar el entorno de Java.
-      # Le decimos que instale Java 17, que es la versión que nuestro proyecto requiere.
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'temurin' # Una distribución popular y gratuita de Java
+          distribution: 'temurin'
 
-      # PASO 3: Construir el proyecto con Maven.
-      # 'run' ejecuta un comando en la terminal de la máquina virtual.
-      # 'mvn -B package' compila, corre las pruebas y empaqueta la aplicación.
-      # '-B' es "batch mode", ideal para entornos no interactivos como este.
-      - name: Build with Maven
+      - name: Build and test with Maven
         run: mvn -B package --file pom.xml
-
-      # Podríamos añadir más pasos aquí en el futuro, como:
-      # - name: Build and push Docker image
-      # - name: Deploy to Render
