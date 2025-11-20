@@ -1,0 +1,48 @@
+@import "variables";
+
+.container-prod-details {
+    padding: $padding;
+    display: flex;
+    flex-direction: row;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow-L;
+    background-color: $glass-color;
+    gap: $gap;
+
+    .container {
+        background-color: blue($color: #000000);
+        flex: 1;
+    }
+
+    .container:nth-child(1) {
+        height: 500px;
+        width: 500px;
+        background-color: $color-secundario;
+        border-radius: $border-radius;
+
+        img {
+            object-fit: contain;
+            height: 500px;
+            width: 500px;
+            border-radius: $border-radius;
+        }
+    }
+
+    .container:nth-child(2) {
+        border-radius: $border-radius;
+        padding: $padding;
+        background-color: $color-secundario;
+
+        form {
+            div {
+                div {
+                    .btn-agregarAlCarrito {
+                        width: 100%;
+                        @include estilo-boton;
+                    }
+                }
+            }
+        }
+    }
+
+}

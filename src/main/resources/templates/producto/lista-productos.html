@@ -1,33 +1,41 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:insert="~{_layout :: html(content=~{::content})}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:insert="~{_layout :: html(content=~{::content})}">
+
 <body>
     <div th:fragment="content">
-        <div class="container py-4">
-            <h1 class="mb-4">Nuestro Catálogo de Productos</h1>
-            <p class="lead">Explora todas nuestras prendas y encuentra tu estilo único.</p>
+        <div class="sub-main">
+            <div class="viewProductos">
+                <h1 class="mb-4">Nuestro Catálogo de Productos</h1>
+                <p class="lead">Explora todas nuestras prendas y encuentra tu estilo único.</p>
 
-            <div th:if="${productos == null or #lists.isEmpty(productos)}">
-                <div class="alert alert-warning text-center">
-                    <h4>¡Vaya!</h4>
-                    <p>Parece que no hay productos disponibles en este momento. Vuelve a intentarlo más tarde.</p>
+                <div th:if="${productos == null or #lists.isEmpty(productos)}">
+                    <div class="alert alert-warning text-center">
+                        <h4>¡Vaya!</h4>
+                        <p>Parece que no hay productos disponibles en este momento. Vuelve a intentarlo más tarde.</p>
+                    </div>
                 </div>
-            </div>
 
-            <div th:if="${not #lists.isEmpty(productos)}" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-                <!-- Iteramos sobre cada producto -->
-                <div class="col" th:each="producto : ${productos}">
-                    <div class="card h-100 shadow-sm product-card">
-                        <a th:href="@{/producto/{id}(id=${producto.id})}" class="text-decoration-none text-dark">
-                            <img th:src="${producto.urlImagen}" class="card-img-top" th:alt="${producto.nombre}">
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="${producto.nombre}">Nombre Producto</h5>
-                                <p class="card-text text-muted" th:text="${producto.nombreCategoria}">Categoría</p>
-                                <p class="card-text fs-5 fw-bold" th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}|">S/ 0.00</p>
+                <div th:if="${not #lists.isEmpty(productos)}" class="container-products">
+                    <!-- Iteramos sobre cada producto -->
+                    <div class="col" th:each="producto : ${productos}">
+                        <div class="product-card">
+                            <a th:href="@{/producto/{id}(id=${producto.id})}" class="text-decoration-none text-dark">
+                                <div class="container-img">
+                                    <img th:src="${producto.urlImagen}" class="img-prod" th:alt="${producto.nombre}">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${producto.nombre}">Nombre Producto</h5>
+                                    <p class="card-text text-muted" th:text="${producto.nombreCategoria}">Categoría</p>
+                                    <p class="card-text fs-5 fw-bold"
+                                        th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}|">
+                                        S/
+                                        0.00</p>
+                                </div>
+                            </a>
+                            <div class="card-footer">
+                                <a th:href="@{/producto/{id}(id=${producto.id})}" class="btn btn-primary w-100">Ver
+                                    Detalles</a>
                             </div>
-                        </a>
-                        <div class="card-footer bg-transparent border-top-0 p-3">
-                             <a th:href="@{/producto/{id}(id=${producto.id})}" class="btn btn-primary w-100">Ver Detalles</a>
                         </div>
                     </div>
                 </div>
@@ -35,4 +43,5 @@
         </div>
     </div>
 </body>
+
 </html>

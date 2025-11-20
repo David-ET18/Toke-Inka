@@ -1,67 +1,75 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:insert="~{_layout :: html(content=~{::content})}">
-<body>
-<div th:fragment="content" th:object="${producto}">
-    <div class="row">
-        <!-- Columna de Imagen -->
-        <div class="col-md-6">
-            <img th:src="*{urlImagen}" class="img-fluid rounded shadow" alt="Imagen del producto">
-        </div>
-        <!-- Columna de Detalles -->
-        <div class="col-md-6">
-            <h1 th:text="*{nombre}">Nombre del Producto</h1>
-            <p class="text-muted" th:text="*{nombreCategoria}">Categoría</p>
-            <p class="fs-3 fw-bold" th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}|">Precio</p>
-            <p th:text="*{descripcion}">Descripción detallada del producto.</p>
-            
-            <hr>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:insert="~{_layout :: html(content=~{::content})}">
 
-            <!-- Formulario para agregar al carrito -->
-            <form th:action="@{/carrito/agregar}" method="post">
-                <input type="hidden" name="productoId" th:value="*{id}">
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-6">
-                        <label for="tallaId" class="form-label">Talla:</label>
-                        <select id="tallaId" name="tallaId" class="form-select" required>
-                             <!-- Esta parte requiere una modificación en el DTO o servicio para pasar las tallas con ID -->
-                             <!-- Por ahora, es un placeholder. Deberías pasar un Map<Long, String> de tallas. -->
-                            <option value="1">S</option>
-                            <option value="2">M</option>
-                            <option value="3">L</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="cantidad" class="form-label">Cantidad:</label>
-                        <input type="number" id="cantidad" name="cantidad" class="form-control" value="1" min="1" required>
-                    </div>
-                    <div class="col-md-12 d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-cart-plus"></i> Agregar al Carrito</button>
+<body>
+    <div th:fragment="content" th:object="${producto}">
+        <div class="sub-main">
+            <div class="container-prod-details">
+                <!-- Columna de Imagen -->
+                <div class="container">
+                    <img th:src="*{urlImagen}" alt="Imagen del producto">
+                </div>
+                <!-- Columna de Detalles -->
+                <div class="container">
+                    <h1 th:text="*{nombre}">Nombre del Producto</h1>
+                    <p class="text-muted" th:text="*{nombreCategoria}">Categoría</p>
+                    <p class="fs-3 fw-bold"
+                        th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}|">Precio
+                    </p>
+                    <p th:text="*{descripcion}">Descripción detallada del producto.</p>
+
+                    <hr>
+
+                    <!-- Formulario para agregar al carrito -->
+                    <form th:action="@{/carrito/agregar}" method="post">
+                        <input type="hidden" name="productoId" th:value="*{id}">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-6">
+                                <label for="tallaId" class="form-label">Talla:</label>
+                                <select id="tallaId" name="tallaId" class="form-select" required>
+                                    <!-- Esta parte requiere una modificación en el DTO o servicio para pasar las tallas con ID -->
+                                    <!-- Por ahora, es un placeholder. Deberías pasar un Map<Long, String> de tallas. -->
+                                    <option value="1">S</option>
+                                    <option value="2">M</option>
+                                    <option value="3">L</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="cantidad" class="form-label">Cantidad:</label>
+                                <input type="number" id="cantidad" name="cantidad" class="form-control" value="1"
+                                    min="1" required>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn-agregarAlCarrito"><i class="bi bi-cart-plus"></i>
+                                    Agregar al
+                                    Carrito</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sección de Reseñas -->
+            <div class="mt-5">
+                <h2>Reseñas</h2>
+                <!-- Aquí iría el formulario para dejar una reseña -->
+                <hr>
+                <div th:if="${#lists.isEmpty(producto.reseñas)}">
+                    <p>Este producto aún no tiene reseñas. ¡Sé el primero!</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(producto.reseñas)}" class="list-group">
+                    <div th:each="resena : ${producto.reseñas}" class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1" th:text="${resena.nombreUsuario}">Nombre Usuario</h5>
+                            <small th:text="${#temporals.format(resena.fechaResena, 'dd/MM/yyyy')}">Fecha</small>
+                        </div>
+                        <p class="mb-1" th:text="${resena.comentario}">Comentario de la reseña.</p>
+                        <small>Calificación: <span th:text="${resena.calificacion}">5</span>/5</small>
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Sección de Reseñas -->
-    <div class="mt-5">
-        <h2>Reseñas</h2>
-        <!-- Aquí iría el formulario para dejar una reseña -->
-        <hr>
-        <div th:if="${#lists.isEmpty(producto.reseñas)}">
-            <p>Este producto aún no tiene reseñas. ¡Sé el primero!</p>
-        </div>
-        <div th:unless="${#lists.isEmpty(producto.reseñas)}" class="list-group">
-            <div th:each="resena : ${producto.reseñas}" class="list-group-item">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1" th:text="${resena.nombreUsuario}">Nombre Usuario</h5>
-                    <small th:text="${#temporals.format(resena.fechaResena, 'dd/MM/yyyy')}">Fecha</small>
-                </div>
-                <p class="mb-1" th:text="${resena.comentario}">Comentario de la reseña.</p>
-                <small>Calificación: <span th:text="${resena.calificacion}">5</span>/5</small>
             </div>
         </div>
     </div>
-</div>
 </body>
+
 </html>

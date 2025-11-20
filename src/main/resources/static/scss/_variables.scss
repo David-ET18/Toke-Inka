@@ -1,0 +1,57 @@
+//COLORES
+$color-principal: #ffc476;
+$color-secundario: #ffffff;
+$glass-color: #b288b39c;
+$color-btn: #b72fb99f;
+
+//TEXTO
+$color-texto: #000000;
+$color-texto-secundario: #ffffff;
+
+//ESPACIOS
+$padding-s: 10px;
+$padding: 20px;
+$margin: 20px;
+$margin-L: 40px;
+$margin-xL: 160px;
+$gap: 20px;
+
+//BORDES
+$border: 2px solid #f0cfff;
+$border-radius: 10px;
+$box-shadow: 0 0 3.5px 0 black;
+$box-shadow-L: 0 0 8.75px 0 black;
+
+//TRANSICIONES
+$transition: ease 0.25s;
+
+//TAMAÑO LETRA
+$font-size: 1rem;
+$font-size-M: 1.5rem;
+$font-size-L: 2rem;
+$font-size-xL: 2.5rem;
+
+//ESTILO DE LETRA
+$negrita: bold;
+
+//EDIT
+$transform: scale(1.05);
+
+@mixin estilo-boton {
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    padding: $padding-s;
+    font-size: $font-size;
+    font-weight: $negrita;
+    border-radius: $border-radius;
+    transition: $transition;
+    background-color: $color-btn;
+
+    &:hover {
+        transition: $transition;
+        border-radius: $border-radius;
+        background-color: darken($color-btn, 10%);
+        transform: $transform;
+    }
+}
