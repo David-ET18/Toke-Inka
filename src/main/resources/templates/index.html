@@ -15,28 +15,63 @@
         </div>
     </div>
     
-    <!-- Alerta de pedido exitoso -->
+    <!-- Alerta de pedido exitoso (Backend - Opcional si usas la alerta JS) -->
     <div th:if="${pedidoExitoso}" class="alert alert-success" role="alert" th:text="${pedidoExitoso}"></div>
 
     <!-- Título de la Sección de Productos -->
-    <h2 id="product-section-title">Nuestros Productos</h2>
+    <h2 id="product-section-title" class="mb-4">Nuestros Productos</h2>
 
     <!-- Contenedor de la Lista de Productos -->
-    <div id="product-list-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    <div id="product-list-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
         <div class="col" th:each="producto : ${productos}">
             <div class="card h-100 shadow-sm product-card">
-                <img th:src="${producto.urlImagen}" class="card-img-top" alt="Imagen de producto">
+                <!-- Validación por si la imagen es nula -->
+                <img th:src="${producto.urlImagen != null ? producto.urlImagen : 'https://via.placeholder.com/300'}" class="card-img-top" alt="Imagen de producto" style="height: 250px; object-fit: cover;">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${producto.nombre}">Nombre Producto</h5>
                     <p class="card-text text-muted" th:text="${producto.nombreCategoria}">Categoría</p>
                     <p class="card-text fs-5 fw-bold" th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}|">S/ 0.00</p>
                 </div>
-                <div class="card-footer bg-transparent border-top-0">
+                <div class="card-footer bg-transparent border-top-0 p-3">
                      <a th:href="@{/producto/{id}(id=${producto.id})}" class="btn btn-primary w-100">Ver Detalles</a>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- ============================================================== -->
+    <!-- SCRIPTS PARA EL MENSAJE DE PAGO EXITOSO (SweetAlert2)      -->
+    <!-- ============================================================== -->
+    
+    <!-- 1. Importar la librería SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- 2. Lógica para detectar la redirección de éxito -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Buscamos en la URL si existe el parámetro ?payment_success=true
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.get('payment_success') === 'true') {
+                // Lanzamos la alerta animada
+                Swal.fire({
+                    title: '¡Pago Realizado con Éxito!',
+                    text: 'Gracias por tu compra en Toke Inca. Hemos enviado el comprobante a tu correo.',
+                    icon: 'success',
+                    confirmButtonColor: '#198754', // Color verde
+                    confirmButtonText: 'Genial, seguir viendo',
+                    backdrop: true,
+                    timer: 5000, // Se cierra sola en 5 segundos (opcional)
+                    timerProgressBar: true
+                }).then((result) => {
+                    // Limpiamos la URL para que no salga la alerta si recarga la página
+                    const url = new URL(window.location);
+                    url.searchParams.delete('payment_success');
+                    window.history.replaceState(null, '', url);
+                });
+            }
+        });
+    </script>
 
 </th:block>
 

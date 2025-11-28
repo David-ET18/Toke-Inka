@@ -1,61 +1,165 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:insert="~{_layout :: html(content=~{::content})}">
+<head>
+    <!-- NUEVO: Estas etiquetas guardan el token de seguridad CSRF -->
+    <!-- Thymeleaf las llenará automáticamente con los valores correctos -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    
+    <script src="https://checkout.culqi.com/js/v4"></script>
+</head>
 <body>
 <div th:fragment="content">
-    <h1>Finalizar Compra</h1>
-    <p>Estás a un paso de completar tu pedido. Por favor, confirma tus datos.</p>
-    
-    <!-- Alerta de error -->
-    <div th:if="${errorPedido}" class="alert alert-danger" role="alert" th:text="${errorPedido}"></div>
+    <div class="container py-4">
+        <h1>Finalizar Compra</h1>
+        <p>Estás a un paso de completar tu pedido.</p>
+        
+        <div th:if="${errorPedido}" class="alert alert-danger" role="alert" th:text="${errorPedido}"></div>
+        <div id="frontend-error" class="alert alert-danger d-none" role="alert"></div>
 
-    <div class="row">
-        <!-- Formulario de Envío y Pago -->
-        <div class="col-lg-7">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h4>Información de Envío</h4>
-                    <form th:action="@{/realizar-pedido}" method="post">
-                        <div class="mb-3">
-                            <label for="direccionEnvio" class="form-label">Dirección Completa</label>
-                            <input type="text" id="direccionEnvio" name="direccionEnvio" class="form-control" placeholder="Av. Ejemplo 123, Dpto 404" required>
-                        </div>
-                        <!-- Puedes agregar más campos como ciudad, país, etc. -->
-
-                        <hr>
-                        <h4>Información de Pago</h4>
-                        <p class="text-muted">La funcionalidad de pago es una simulación. Al hacer clic en "Realizar Pedido", tu compra se procesará.</p>
-                        <!-- Aquí iría la integración con una pasarela de pago real -->
-
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-success btn-lg">Realizar Pedido</button>
-                        </div>
-                    </form>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4>Información de Envío</h4>
+                        <form id="checkoutForm">
+                            <div class="mb-3">
+                                <label for="direccionEnvio" class="form-label">Dirección Completa</label>
+                                <input type="text" id="direccionEnvio" name="direccionEnvio" class="form-control" required>
+                            </div>
+                            <hr>
+                            <h4>Información de Pago</h4>
+                            <p class="text-muted">Pago seguro con Culqi.</p>
+                            <div class="d-grid mt-4">
+                                <button type="submit" id="btnPagar" class="btn btn-success btn-lg">
+                                    <span id="btnText">Pagar y Realizar Pedido</span>
+                                    <span id="btnLoading" class="spinner-border spinner-border-sm d-none"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Resumen del Carrito -->
-        <div class="col-lg-5">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h4>Tu Pedido</h4>
-                    <ul class="list-group list-group-flush" th:if="${carrito != null}">
-                        <li th:each="item : ${carrito.items}" class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0" th:text="${item.nombreProducto}">Nombre Producto</h6>
-                                <small class="text-muted" th:text="|${item.cantidad} x S/ ${#numbers.formatDecimal(item.precioUnitario, 1, 'COMMA', 2, 'POINT')}|">Cantidad y Precio</small>
-                            </div>
-                            <span class="text-muted" th:text="|S/ ${#numbers.formatDecimal(item.getSubtotal(), 1, 'COMMA', 2, 'POINT')}|">Subtotal</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between fw-bold fs-5">
-                            <span>Total (S/)</span>
-                            <strong th:text="${#numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}">Total</strong>
-                        </li>
-                    </ul>
+            
+            <div class="col-lg-5">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4>Tu Pedido</h4>
+                        <ul class="list-group list-group-flush" th:if="${carrito != null}">
+                            <li th:each="item : ${carrito.items}" class="list-group-item d-flex justify-content-between lh-sm">
+                                <div>
+                                    <h6 class="my-0" th:text="${item.nombreProducto}">Producto</h6>
+                                    <small class="text-muted" th:text="|${item.cantidad} x S/ ${#numbers.formatDecimal(item.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></small>
+                                </div>
+                                <span class="text-muted" th:text="|S/ ${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}|"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between fw-bold fs-5">
+                                <span>Total (S/)</span>
+                                <strong class="text-success" th:text="${#numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}"></strong>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script src="https://checkout.culqi.com/js/v4"></script>
+
+    <script th:inline="javascript">
+        Culqi.publicKey = /*[[${culqiPublicKey}]]*/ '';
+        
+        // NUEVO: Obtener el token CSRF de las etiquetas meta del head
+        // (Si usas un layout, asegúrate que las meta tags se rendericen, 
+        // si no, JavaScript fallará al no encontrarlas)
+        const csrfTokenMeta = document.querySelector('meta[name="_csrf"]');
+        const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+        
+        const form = document.getElementById('checkoutForm');
+        const btnPagar = document.getElementById('btnPagar');
+        const btnText = document.getElementById('btnText');
+        const btnLoading = document.getElementById('btnLoading');
+        const errorAlert = document.getElementById('frontend-error');
+
+        Culqi.options({
+            style: {
+                logo: 'https://cdn-icons-png.flaticon.com/512/3081/3081559.png', 
+                maincolor: '#198754'
+            }
+        });
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            errorAlert.classList.add('d-none');
+            btnPagar.disabled = true;
+            btnText.textContent = "Procesando...";
+            btnLoading.classList.remove('d-none');
+
+            try {
+                const formData = new FormData(form);
+
+                // PREPARAR HEADERS CON EL TOKEN DE SEGURIDAD
+                const headers = {};
+                if (csrfTokenMeta && csrfHeaderMeta) {
+                    headers[csrfHeaderMeta.content] = csrfTokenMeta.content;
+                }
+
+                const response = await fetch('/realizar-pedido', {
+                    method: 'POST',
+                    headers: headers, // NUEVO: Enviamos el token aquí
+                    body: formData
+                });
+
+                if (response.status === 403) {
+                    throw new Error("Error de seguridad (403). Recarga la página e intenta de nuevo.");
+                }
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error en el servidor.');
+                }
+
+                Culqi.settings({
+                    title: 'Tienda Toke',
+                    currency: 'PEN',
+                    amount: /*[[${carrito.total * 100}]]*/ 0, 
+                    order: data.culqiOrderId
+                });
+
+                Culqi.open();
+
+                btnPagar.disabled = false;
+                btnText.textContent = "Realizar Pedido";
+                btnLoading.classList.add('d-none');
+
+            } catch (error) {
+                console.error(error);
+                errorAlert.textContent = error.message;
+                errorAlert.classList.remove('d-none');
+                btnPagar.disabled = false;
+                btnText.textContent = "Realizar Pedido";
+                btnLoading.classList.add('d-none');
+            }
+        });
+
+        function culqi() {
+            if (Culqi.token) { 
+                console.log("Token:", Culqi.token.id);
+                window.location.href = "/?payment_success=true"; 
+            } else if (Culqi.order) { 
+                console.log("Orden:", Culqi.order);
+                window.location.href = "/?payment_success=true";
+            } else {
+                if(Culqi.error){
+                    console.error(Culqi.error.user_message);
+                    errorAlert.textContent = Culqi.error.user_message;
+                    errorAlert.classList.remove('d-none');
+                }
+            }
+        }
+    </script>
 </div>
 </body>
 </html>
