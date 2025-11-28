@@ -4,46 +4,40 @@
   Se asume que en tu archivo '_layout.html' tienes un fragmento llamado 'layout' 
   que acepta un parámetro para el contenido.
 -->
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:insert="~{_layout :: html(content=~{::content})}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:insert="~{_layout :: html(content=~{::content})}">
 
 <body>
     <!-- 
       Este div es el contenido específico de la página de login.
       Thymeleaf lo tomará y lo insertará en la plantilla _layout.
     -->
-    <div th:fragment="content">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
-                <div class="card shadow-lg">
-                    <div class="card-body p-5">
-                        <h2 class="card-title text-center mb-4">Iniciar Sesión</h2>
+    <div th:fragment="content" class="container-login">
+        <div class="sub-container">
+            <h2 class="card-title text-center mb-4">Iniciar Sesión</h2>
 
-                        <!-- Alertas -->
-                        <div th:if="${param.error}" class="alert alert-danger">Usuario o contraseña incorrectos.</div>
-                        <div th:if="${param.logout}" class="alert alert-success">Has cerrado sesión exitosamente.</div>
-                        <div th:if="${registroExitoso}" class="alert alert-success" th:text="${registroExitoso}"></div>
+            <!-- Alertas -->
+            <div th:if="${param.error}" class="alert alert-danger">Usuario o contraseña incorrectos.</div>
+            <div th:if="${param.logout}" class="alert alert-success">Has cerrado sesión exitosamente.</div>
+            <div th:if="${registroExitoso}" class="alert alert-success" th:text="${registroExitoso}"></div>
 
-                        <form th:action="@{/login}" method="post">
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Correo Electrónico</label>
-                                <input type="email" id="username" name="username" class="form-control" required autofocus>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Contraseña</label>
-                                <input type="password" id="password" name="password" class="form-control" required>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
-                            </div>
-                        </form>
-                        <div class="text-center mt-3">
-                            <p>¿No tienes una cuenta? <a th:href="@{/register}">Regístrate aquí</a></p>
-                        </div>
-                    </div>
+            <form class="form-Login" th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Correo Electrónico</label>
+                    <input type="email" id="username" name="username" class="form-control" required autofocus>
                 </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
+                </div>
+            </form>
+            <div class="text-center mt-3">
+                <p>¿No tienes una cuenta? <a th:href="@{/register}">Regístrate aquí</a></p>
             </div>
         </div>
     </div>
 </body>
+
 </html>

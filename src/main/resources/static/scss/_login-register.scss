@@ -1,0 +1,20 @@
+@import "variables";
+
+.container-login,
+.container-register {
+    display: flex;
+    justify-content: center;
+    margin-block: $margin-xL;
+
+    .sub-container {
+        padding: $padding;
+        border-radius: $border-radius;
+        box-shadow: $box-shadow;
+        width: 500px;
+
+        .form-Login,
+        .form-Register {
+            margin-block: $margin-L;
+        }
+    }
+}

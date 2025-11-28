@@ -1,0 +1,22 @@
+@import "variables";
+@import "header";
+@import "carrusel";
+@import "index";
+@import "productos";
+@import "productoDetalle";
+@import "login-register";
+@import "footer";
+
+body {
+    background-color: red;
+}
+
+main {
+    min-height: calc(100vh - 240px);
+    padding: 0;
+
+    .sub-main {
+        margin-block: 100px;
+        margin-inline: 300px;
+    }
+}

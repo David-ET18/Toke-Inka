@@ -1,0 +1,14 @@
+@import "variables";
+
+.carousel{
+    width: 100%;
+    .carousel-inner{
+        .carousel-item{
+            img{
+                object-fit: cover;
+                width: 100%;
+                max-height: 500px;
+            }
+        }
+    }
+}
