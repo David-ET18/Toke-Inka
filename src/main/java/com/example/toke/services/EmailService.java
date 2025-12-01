@@ -4,6 +4,7 @@ import com.example.toke.dto.PedidoDetalleDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value; // IMPORTANTE
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -21,6 +22,11 @@ public class EmailService {
     private final TemplateEngine templateEngine;
     private final PdfGenerationService pdfService;
 
+    // 1. INYECTAMOS EL CORREO DE BREVO DESDE LA CONFIGURACIÓN
+    // Esto tomará el valor de la variable MAIL_USERNAME de Render
+    @Value("${spring.mail.username}")
+    private String remitente;
+
     @Autowired
     public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine, PdfGenerationService pdfService) {
         this.mailSender = mailSender;
@@ -28,35 +34,46 @@ public class EmailService {
         this.pdfService = pdfService;
     }
 
-    @Async // ¡Esta anotación hace que el método se ejecute en segundo plano!
+    @Async // Se ejecuta en segundo plano para no trabar la web
     public void enviarBoletaPorCorreo(PedidoDetalleDTO pedido, String emailCliente) {
         try {
-            // 1. Prepara el mensaje MIME
+            // Preparar mensaje
             MimeMessage mimeMessage = mailSender.createMimeMessage();
-            // El 'true' indica que será un mensaje multipart (con adjuntos)
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            // 2. Prepara el contexto de Thymeleaf para el cuerpo del correo
+            // Preparar datos para el HTML
             Context context = new Context();
             context.setVariable("pedido", pedido);
+            
+            // 2. CORRECCIÓN DE NOMBRE DE PLANTILLA
+            // Debe coincidir con el nombre del archivo en resources/templates/email/
+            // Usamos 'correo-compra' que fue el diseño "Ultra" que hicimos.
             String htmlBody = templateEngine.process("email/confirmacion-pedido", context);
 
-            // 3. Configura los detalles del correo
+            // Configurar destinatario y asunto
             helper.setTo(emailCliente);
-            helper.setFrom("tu-correo@gmail.com"); // Debe ser el mismo que configuraste
-            helper.setSubject("Confirmación de tu pedido en Toke Inca #" + pedido.getId());
-            helper.setText(htmlBody, true); // El 'true' indica que el texto es HTML
+            
+            // 3. CORRECCIÓN DEL REMITENTE (Crucial para Brevo)
+            // Usamos la variable inyectada, no un string "hardcoded"
+            helper.setFrom(remitente); 
+            
+            helper.setSubject("Confirmación de Pedido #" + pedido.getId() + " - Toke Inca");
+            helper.setText(htmlBody, true);
 
-            // 4. Genera el PDF y lo adjunta
+            // Generar y adjuntar PDF
             byte[] boletaPdf = pdfService.generarBoletaPdf(pedido);
-            helper.addAttachment("Boleta-Pedido-" + pedido.getId() + ".pdf", new ByteArrayResource(boletaPdf));
+            helper.addAttachment("Boleta-" + pedido.getId() + ".pdf", new ByteArrayResource(boletaPdf));
 
-            // 5. Envía el correo
+            // Enviar
             mailSender.send(mimeMessage);
+            
+            // Log de éxito para ver en Render
+            System.out.println("✅ Correo enviado con éxito a: " + emailCliente + " desde: " + remitente);
 
         } catch (MessagingException | IOException e) {
-            // En un sistema real, aquí deberías registrar el error en un log
-            System.err.println("Error al enviar el correo de confirmación: " + e.getMessage());
+            // Log de error detallado
+            System.err.println("❌ ERROR CRÍTICO enviando correo: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
