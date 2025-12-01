@@ -4,66 +4,120 @@
       th:insert="~{_layout :: html(content=~{::content})}">
 
 <th:block th:fragment="content">
-    <div class="container py-4">
+    <div class="container py-5 admin-container">
+        
+        <!-- Cabecera Admin (Consistente con las otras vistas) -->
+        <div class="admin-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-1" th:text="${producto.id != null ? 'Editar Producto' : 'Nuevo Producto'}">Gestión</h1>
+                <p class="mb-0 text-muted">Completa la información para publicar en el catálogo.</p>
+            </div>
+            <a th:href="@{/admin/productos}" class="btn btn-outline-secondary rounded-pill px-4">
+                <i class="bi bi-arrow-left me-2"></i>Volver
+            </a>
+        </div>
+
+        <!-- Navegación Interna -->
+        <div class="nav-admin mb-4">
+            <a class="nav-link" th:href="@{/admin/dashboard}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a class="nav-link active" th:href="@{/admin/productos}">
+                <i class="bi bi-box-seam"></i> Productos
+            </a>
+            <a class="nav-link" th:href="@{/admin/pedidos}">
+                <i class="bi bi-receipt"></i> Pedidos
+            </a>
+        </div>
+
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <h1 th:text="${pageTitle}">Título del Formulario</h1>
-                <hr>
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <form th:action="@{/admin/productos/guardar}" th:object="${producto}" method="post" enctype="multipart/form-data">
-                            <!-- Campo oculto para el ID en modo edición -->
-                            <input type="hidden" th:field="*{id}" />
-                            
-                            <div class="mb-3">
-                                <label for="nombre" class="form-label">Nombre del Producto</label>
-                                <input type="text" id="nombre" class="form-control" th:field="*{nombre}" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
-                            </div>
+            <div class="col-lg-9">
+                
+                <!-- Tarjeta del Formulario -->
+                <div class="admin-form-card">
+                    <h4><i class="bi bi-pencil-square me-2 text-primary"></i>Datos del Producto</h4>
 
-                            <div class="mb-3">
-                                <label for="descripcion" class="form-label">Descripción</label>
-                                <textarea id="descripcion" class="form-control" rows="4" th:field="*{descripcion}"></textarea>
-                            </div>
+                    <form th:action="@{/admin/productos/guardar}" th:object="${producto}" method="post" enctype="multipart/form-data">
+                        <!-- ID Oculto -->
+                        <input type="hidden" th:field="*{id}" />
+                        
+                        <!-- Fila 1: Nombre -->
+                        <div class="form-floating mb-3">
+                            <input type="text" id="nombre" class="form-control" th:field="*{nombre}" placeholder="Nombre" required>
+                            <label for="nombre">Nombre del Producto</label>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="precio" class="form-label">Precio (S/)</label>
-                                    <input type="number" step="0.01" id="precio" class="form-control" th:field="*{precio}" required>
-                                    <div class="text-danger" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
+                        <!-- Fila 2: Precio y Categoría -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" step="0.01" id="precio" class="form-control" th:field="*{precio}" placeholder="0.00" required>
+                                    <label for="precio">Precio (S/)</label>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="categoriaId" class="form-label">Categoría</label>
+                                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
                                     <select id="categoriaId" class="form-select" th:field="*{categoriaId}" required>
-                                        <option value="">-- Selecciona una categoría --</option>
+                                        <option value="" disabled selected>Seleccionar...</option>
                                         <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nombre}"></option>
                                     </select>
-                                    <div class="text-danger" th:if="${#fields.hasErrors('categoriaId')}" th:errors="*{categoriaId}"></div>
+                                    <label for="categoriaId">Categoría</label>
                                 </div>
+                                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('categoriaId')}" th:errors="*{categoriaId}"></div>
                             </div>
+                        </div>
 
-                            <div class="mb-3">
-                                <label for="imagen" class="form-label">Imagen del Producto</label>
-                                <input type="file" id="imagen" name="imagen" class="form-control" accept="image/png, image/jpeg, image/gif">
-                                <small class="form-text text-muted">Sube una nueva imagen solo si quieres reemplazar la actual. Para productos nuevos, es recomendable subir una.</small>
-                            </div>
+                        <!-- Fila 3: Descripción -->
+                        <div class="form-floating mb-4">
+                            <textarea id="descripcion" class="form-control" style="height: 120px" th:field="*{descripcion}" placeholder="Desc"></textarea>
+                            <label for="descripcion">Descripción Detallada</label>
+                        </div>
 
-                            <!-- Muestra la imagen actual si estamos en modo edición -->
-                            <div th:if="*{urlImagenActual}" class="mb-4">
-                                <label class="form-label d-block">Imagen Actual:</label>
-                                <img th:src="@{*{urlImagenActual}}" width="150" class="img-thumbnail">
+                        <!-- Fila 4: Imagen (Con Previsualización JS) -->
+                        <div class="image-upload-container mb-4">
+                            <label class="form-label d-block fw-bold text-secondary mb-3">Imagen del Producto</label>
+                            
+                            <!-- Imagen Preview -->
+                            <img id="imgPreview" 
+                                 th:src="*{urlImagenActual != null ? urlImagenActual : 'https://via.placeholder.com/150?text=Sin+Imagen'}" 
+                                 class="img-preview" alt="Vista previa">
+                            
+                            <!-- Input File -->
+                            <div class="input-group w-75 mx-auto">
+                                <input type="file" id="imagen" name="imagen" class="form-control" accept="image/png, image/jpeg, image/webp" onchange="previewImage(this)">
+                                <label class="input-group-text" for="imagen"><i class="bi bi-upload"></i></label>
                             </div>
+                            <small class="text-muted mt-2 d-block">Formatos: JPG, PNG, WEBP. Si no subes nada, se mantiene la actual.</small>
+                        </div>
 
-                            <div class="d-flex justify-content-end">
-                                <a th:href="@{/admin/productos}" class="btn btn-secondary me-2">Cancelar</a>
-                                <button type="submit" class="btn btn-primary">Guardar Producto</button>
-                            </div>
-                        </form>
-                    </div>
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                            <a th:href="@{/admin/productos}" class="btn btn-light border px-4 rounded-pill fw-bold">Cancelar</a>
+                            <button type="submit" class="btn btn-primary px-5 rounded-pill fw-bold shadow-sm">
+                                <i class="bi bi-save me-2"></i> Guardar Producto
+                            </button>
+                        </div>
+                    </form>
                 </div>
+
             </div>
         </div>
     </div>
-</th:block>
 
+    <!-- Script Simple para Previsualizar Imagen -->
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imgPreview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+</th:block>
 </html>

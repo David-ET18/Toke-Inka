@@ -1,22 +1,50 @@
-@import "variables";
+/* =========================================
+   ARCHIVO PRINCIPAL (ESTILOS GLOBALES)
+   ========================================= */
+
+// 1. Configuración Base
+@import "variables"; // Aquí están los colores nuevos
+
+// 2. Componentes Estructurales
 @import "header";
+@import "footer";
+
+// 3. Componentes de Páginas (Iremos mejorando estos luego)
 @import "carrusel";
 @import "index";
 @import "productos";
 @import "productoDetalle";
 @import "login-register";
-@import "footer";
+@import "carrito";
+@import "cliente";
+@import "checkout";
 
+@import "admin";
+
+// 4. Estilos Globales del Body
 body {
-    background-color: red;
+    background-color: $bg-body; // Color crema suave definido en variables
+    color: $text-main;
+    font-family: $font-body;
+    overflow-x: hidden; // Evita scroll horizontal indeseado
 }
 
+// 5. Ajuste del Contenedor Principal (Responsive)
 main {
-    min-height: calc(100vh - 240px);
-    padding: 0;
+    // Esto asegura que el footer siempre se vaya al fondo aunque haya poco contenido
+    min-height: 80vh; 
+    padding-top: 20px;
 
-    .sub-main {
-        margin-block: 100px;
-        margin-inline: 300px;
+    .sub-container, .sub-main {
+        // En lugar de márgenes fijos de 300px, usamos un ancho máximo
+        width: 100%;
+        max-width: 1400px; // Ancho máximo para pantallas grandes
+        margin: 0 auto;    // Centra el contenido
+        padding: 0 20px;   // Un poco de aire a los lados en móviles
+        
+        // Solo pantallas muy grandes
+        @media (min-width: 1400px) {
+            padding: 0 80px;
+        }
     }
 }

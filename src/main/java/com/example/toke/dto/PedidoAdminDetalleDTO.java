@@ -19,6 +19,7 @@ public class PedidoAdminDetalleDTO {
     
     // Info de envío
     private String direccionEnvio;
+    private String ciudadEnvio;
     
     // Productos
     private List<DetallePedidoDTO> detalles;

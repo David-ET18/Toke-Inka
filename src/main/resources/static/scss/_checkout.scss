@@ -1,0 +1,149 @@
+@import "variables";
+
+.checkout-page {
+    // 1. Tarjeta del Formulario (Izquierda)
+    .checkout-form-card {
+        background: white;
+        border: none;
+        border-radius: $radius-md;
+        box-shadow: $shadow-sm;
+        padding: 40px;
+        transition: $transition-std;
+
+        h4 {
+            color: $secondary;
+            font-weight: 800;
+            border-bottom: 2px solid rgba(0,0,0,0.05);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        // Estilos de inputs (Floating Labels consistentes con Login)
+        .form-floating {
+            > .form-control {
+                border-radius: $radius-sm;
+                border: 1px solid #e0e0e0;
+                
+                &:focus {
+                    border-color: $primary;
+                    box-shadow: 0 0 0 4px rgba($primary, 0.1);
+                }
+            }
+            > label { color: #999; }
+            > .form-control:focus ~ label { color: $primary; font-weight: 600; }
+        }
+
+        // Sección de Pago Seguro
+        .payment-info {
+            background-color: rgba($secondary, 0.03);
+            border-radius: $radius-sm;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px dashed rgba($secondary, 0.2);
+
+            i { font-size: 1.5rem; margin-right: 10px; color: $success; }
+        }
+    }
+
+    // 2. Tarjeta de Resumen (Derecha)
+    .checkout-summary-card {
+        background: white;
+        border: none;
+        border-radius: $radius-md;
+        box-shadow: $shadow-md; // Sombra más fuerte para resaltar
+        overflow: hidden;
+        position: sticky;
+        top: 100px; // Se pega al hacer scroll
+
+        .card-header {
+            background-color: $secondary;
+            color: white;
+            padding: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+            border: none;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        // Lista de items pequeños
+        .mini-product-list {
+            max-height: 300px;
+            overflow-y: auto; // Scroll si hay muchos productos
+            margin-bottom: 20px;
+            padding-right: 10px;
+
+            /* Scrollbar bonita */
+            &::-webkit-scrollbar { width: 6px; }
+            &::-webkit-scrollbar-thumb { background-color: #ddd; border-radius: 4px; }
+
+            .list-group-item {
+                border: none;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+                padding: 15px 0;
+                
+                &:last-child { border-bottom: none; }
+
+                img {
+                    border-radius: $radius-sm;
+                    border: 1px solid #eee;
+                }
+            }
+        }
+
+        .total-section {
+            background-color: $bg-body;
+            border-radius: $radius-sm;
+            padding: 20px;
+            margin-top: 20px;
+
+            .total-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 10px;
+                font-size: 0.95rem;
+                color: #666;
+
+                &.final {
+                    margin-top: 15px;
+                    padding-top: 15px;
+                    border-top: 1px solid rgba(0,0,0,0.1);
+                    font-size: 1.3rem;
+                    color: $primary;
+                    font-weight: 800;
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+
+    // Botón de Pagar
+    #btnPagar {
+        background-color: $success; // Verde confianza
+        border: none;
+        border-radius: $radius-pill;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 15px;
+        box-shadow: 0 4px 15px rgba($success, 0.4);
+        transition: $transition-std;
+
+        &:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba($success, 0.5);
+            background-color: darken($success, 5%);
+        }
+
+        &:disabled {
+            background-color: #ccc;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+    }
+}

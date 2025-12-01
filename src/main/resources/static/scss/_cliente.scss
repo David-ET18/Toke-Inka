@@ -1,0 +1,183 @@
+@import "variables";
+
+// Contenedor principal del dashboard
+.account-container {
+    padding-bottom: 60px;
+}
+
+// 1. Menú Lateral (Sidebar)
+.account-nav {
+    border-radius: $radius-md;
+    overflow: hidden; // Para que los bordes redondeados recorten el contenido
+    box-shadow: $shadow-sm;
+    background: white;
+    border: none;
+
+    .list-group-item {
+        border: none;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 15px 20px;
+        color: $secondary;
+        font-weight: 600;
+        transition: $transition-std;
+        display: flex;
+        align-items: center;
+
+        i {
+            font-size: 1.2rem;
+            opacity: 0.7;
+            transition: $transition-std;
+        }
+
+        // Efecto Hover
+        &:hover {
+            background-color: rgba($primary, 0.05); // Fondo terracota muy suave
+            color: $primary;
+            padding-left: 25px; // Pequeño desplazamiento animado
+            
+            i { opacity: 1; color: $primary; }
+        }
+
+        // Estado Activo (Página actual)
+        &.active {
+            background-color: $primary;
+            color: white;
+            border-color: $primary;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba($primary, 0.3);
+
+            i { opacity: 1; color: white; }
+            
+            &:hover {
+                padding-left: 20px; // No desplazar si ya está activo
+                background-color: $primary;
+            }
+        }
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+}
+
+// 2. Tarjeta de Contenido Principal
+.account-content {
+    .card {
+        border: none;
+        border-radius: $radius-md;
+        box-shadow: $shadow-md;
+        background: white;
+        transition: $transition-std;
+
+        // Título de la tarjeta
+        .card-title {
+            font-weight: 800;
+            color: $secondary;
+            border-bottom: 2px solid rgba(0,0,0,0.05);
+            padding-bottom: 15px;
+            font-size: 1.5rem;
+        }
+    }
+}
+
+// 3. Estilos de Formularios (Floating Labels mejorados)
+.form-floating {
+    > .form-control {
+        border-radius: $radius-sm;
+        border: 1px solid #e0e0e0;
+        
+        &:focus {
+            border-color: $primary;
+            box-shadow: 0 0 0 4px rgba($primary, 0.1);
+        }
+
+        // Inputs de solo lectura (como el email)
+        &[readonly] {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            border-color: transparent;
+        }
+    }
+
+    > label {
+        color: #999;
+    }
+
+    // Cuando el input tiene foco, la etiqueta cambia de color
+    > .form-control:focus ~ label {
+        color: $primary;
+        font-weight: 600;
+    }
+}
+
+// 4. Tablas de Pedidos (Para la siguiente vista, pero lo dejamos listo)
+.table-orders {
+    thead {
+        background-color: rgba($secondary, 0.05);
+        th {
+            color: $secondary;
+            font-weight: 700;
+            border: none;
+            padding: 15px;
+        }
+    }
+    tbody {
+        td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+        }
+    }
+}
+
+// 5. Estilos específicos para Detalle de Pedido
+.order-detail-card {
+    .card-header {
+        background-color: white;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 20px 30px;
+    }
+
+    .info-box {
+        h6 {
+            color: #999;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        p {
+            font-size: 1.1rem;
+            color: $secondary;
+            font-weight: 600;
+            margin: 0;
+        }
+    }
+
+    .product-list-item {
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        
+        &:last-child { border-bottom: none; }
+
+        img {
+            border-radius: $radius-sm;
+            box-shadow: $shadow-sm;
+            background-color: #f8f9fa;
+        }
+    }
+
+    .shipping-card {
+        background-color: rgba($secondary, 0.03);
+        border-radius: $radius-md;
+        padding: 20px;
+        height: 100%;
+        
+        h5 { 
+            font-size: 1rem; 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 10px;
+        }
+    }
+}

@@ -1,0 +1,379 @@
+@import "variables";
+
+.admin-container {
+    padding-bottom: 60px;
+
+    // =========================================
+    // 1. TÍTULO Y CABECERA GENERAL
+    // =========================================
+    .admin-header {
+        margin-bottom: 2rem;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding-bottom: 1rem;
+
+        h1 {
+            font-weight: 800;
+            color: $secondary;
+            letter-spacing: -0.5px;
+        }
+        
+        p { color: #666; }
+    }
+
+    // =========================================
+    // 2. NAVEGACIÓN INTERNA (Pills)
+    // =========================================
+    .nav-admin {
+        background: white;
+        padding: 10px;
+        border-radius: $radius-md;
+        box-shadow: $shadow-sm;
+        margin-bottom: 30px;
+        display: inline-flex;
+        gap: 5px;
+        flex-wrap: wrap; // Para móviles
+
+        .nav-link {
+            color: $secondary;
+            border-radius: $radius-sm;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: $transition-std;
+            border: none;
+
+            i { margin-right: 8px; }
+
+            &:hover {
+                background-color: rgba($primary, 0.05);
+                color: $primary;
+            }
+
+            &.active {
+                background-color: $secondary;
+                color: $accent; // Texto dorado
+                box-shadow: 0 4px 10px rgba($secondary, 0.3);
+            }
+        }
+    }
+
+    // =========================================
+    // 3. TARJETAS DE ESTADÍSTICAS (Dashboard)
+    // =========================================
+    .stat-card {
+        background: white;
+        border-radius: $radius-md;
+        box-shadow: $shadow-sm;
+        padding: 25px;
+        position: relative;
+        overflow: hidden;
+        transition: $transition-std;
+        height: 100%;
+        border-left: 5px solid transparent;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: $shadow-md;
+        }
+
+        .stat-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2.5rem;
+            opacity: 0.15;
+        }
+
+        h5 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: $secondary;
+            margin: 0;
+        }
+
+        // Variaciones de color
+        &.ingresos {
+            border-left-color: $success;
+            .stat-icon, .stat-value { color: $success; }
+        }
+        &.pedidos {
+            border-left-color: $primary;
+            .stat-icon { color: $primary; }
+        }
+        &.usuarios {
+            border-left-color: #0dcaf0;
+            .stat-icon { color: #0dcaf0; }
+        }
+        &.productos {
+            border-left-color: $accent;
+            .stat-icon { color: $accent; }
+        }
+    }
+
+    // =========================================
+    // 4. LISTA TOP PRODUCTOS (Dashboard)
+    // =========================================
+    .top-products-card {
+        background: white;
+        border-radius: $radius-md;
+        box-shadow: $shadow-sm;
+        border: none;
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 20px;
+            
+            h4 {
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: $secondary;
+                margin: 0;
+            }
+        }
+
+        .list-group-item {
+            border: none;
+            border-bottom: 1px solid #f8f9fa;
+            padding: 15px 20px;
+            transition: background 0.2s;
+
+            &:last-child { border-bottom: none; }
+            &:hover { background-color: #fcfcfc; }
+
+            img {
+                border: 1px solid #eee;
+                padding: 2px;
+                background: white;
+                border-radius: $radius-sm;
+            }
+
+            .product-name {
+                font-weight: 600;
+                color: $text-main;
+            }
+        }
+    }
+
+    // =========================================
+    // 5. TABLAS DE ADMINISTRACIÓN
+    // =========================================
+    .admin-table-card {
+        background: white;
+        border-radius: $radius-md;
+        box-shadow: $shadow-sm;
+        border: none;
+        overflow: hidden;
+
+        .table {
+            margin-bottom: 0;
+            
+            thead {
+                background-color: rgba($secondary, 0.03);
+                
+                th {
+                    color: $secondary;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    font-size: 0.75rem;
+                    letter-spacing: 1px;
+                    padding: 15px 20px;
+                    border-bottom: 2px solid rgba(0,0,0,0.05);
+                }
+            }
+
+            tbody {
+                tr {
+                    transition: background-color 0.2s ease;
+                    
+                    &:hover {
+                        background-color: rgba($primary, 0.02);
+                    }
+
+                    td {
+                        padding: 15px 20px;
+                        vertical-align: middle;
+                        color: #555;
+                        font-size: 0.95rem;
+                        border-bottom: 1px solid rgba(0,0,0,0.05);
+
+                        .img-thumbnail-table {
+                            width: 50px;
+                            height: 50px;
+                            object-fit: cover;
+                            border-radius: $radius-sm;
+                            border: 1px solid #eee;
+                            box-shadow: $shadow-sm;
+                        }
+
+                        &.price-cell {
+                            color: $primary;
+                            font-weight: 700;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Botones de acción circulares
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: $transition-std;
+        border: none;
+        
+        &.edit {
+            background-color: rgba(#ffc107, 0.1);
+            color: #d39e00;
+            &:hover { background-color: #ffc107; color: white; }
+        }
+
+        &.delete {
+            background-color: rgba($danger, 0.1);
+            color: $danger;
+            &:hover { background-color: $danger; color: white; }
+        }
+    }
+
+    // =========================================
+    // 6. FORMULARIOS DE ADMINISTRACIÓN
+    // =========================================
+    .admin-form-card {
+        background: white;
+        border-radius: $radius-md;
+        box-shadow: $shadow-md;
+        padding: 40px;
+        border: none;
+        border-top: 5px solid $primary;
+
+        h4 {
+            color: $secondary;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .form-floating {
+            > .form-control, > .form-select {
+                border-radius: $radius-sm;
+                border: 1px solid #dee2e6;
+                
+                &:focus {
+                    border-color: $primary;
+                    box-shadow: 0 0 0 4px rgba($primary, 0.1);
+                }
+            }
+            > label { color: #888; }
+            > .form-control:focus ~ label,
+            > .form-select:focus ~ label {
+                color: $primary;
+                font-weight: 600;
+            }
+        }
+
+        .image-upload-container {
+            background-color: $bg-body;
+            border: 2px dashed rgba($secondary, 0.2);
+            border-radius: $radius-md;
+            padding: 20px;
+            text-align: center;
+            transition: $transition-std;
+
+            &:hover {
+                border-color: $primary;
+                background-color: rgba($primary, 0.02);
+            }
+
+            .img-preview {
+                width: 150px;
+                height: 150px;
+                object-fit: cover;
+                border-radius: $radius-md;
+                box-shadow: $shadow-sm;
+                margin-bottom: 15px;
+                background-color: white;
+                border: 1px solid #eee;
+            }
+        }
+    }
+
+    // =========================================
+    // 7. DETALLE DE PEDIDO (ADMIN)
+    // =========================================
+    .admin-order-detail {
+        
+        .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #999;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            margin-bottom: 12px;
+            .label {
+                font-weight: 600;
+                color: $secondary;
+                display: block;
+                font-size: 0.9rem;
+            }
+            .value {
+                color: #555;
+                font-size: 1rem;
+            }
+        }
+
+        .status-card {
+            background-color: rgba($primary, 0.02);
+            border: 1px solid rgba($primary, 0.1);
+            
+            .btn-update {
+                background-color: $secondary;
+                color: white;
+                border: none;
+                &:hover { background-color: $primary; }
+            }
+        }
+
+        .admin-product-list {
+            .list-group-item {
+                border: none;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+                padding: 15px 0;
+                &:last-child { border-bottom: none; }
+
+                .product-name {
+                    font-weight: 700;
+                    color: $secondary;
+                }
+                .product-meta {
+                    font-size: 0.85rem;
+                    color: #888;
+                }
+            }
+        }
+        
+        .total-display {
+            font-size: 1.5rem;
+            color: $primary;
+            font-weight: 800;
+        }
+    }
+}

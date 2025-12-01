@@ -1,75 +1,181 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:with="pageTitle='Detalle del Pedido'"
+      th:with="pageTitle='Detalle del Pedido | Admin'"
       th:insert="~{_layout :: html(content=~{::content})}">
 
 <th:block th:fragment="content">
-    <div class="container py-4" th:object="${pedido}">
-        <div class="d-flex justify-content-between align-items-center">
-            <h1 th:text="|Detalle del Pedido #${pedido.id}|"></h1>
-            <a th:href="@{/admin/pedidos}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver a la lista</a>
-        </div>
+    <div class="container py-5 admin-container admin-order-detail" th:object="${pedido}">
         
-        <div th:if="${mensaje}" class="alert alert-success mt-3" th:text="${mensaje}"></div>
+        <!-- 1. Cabecera con Navegación y Botones -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1">
+                        <li class="breadcrumb-item"><a th:href="@{/admin/dashboard}" class="text-decoration-none text-muted">Admin</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/admin/pedidos}" class="text-decoration-none text-muted">Pedidos</a></li>
+                        <li class="breadcrumb-item active text-primary fw-bold" aria-current="page" th:text="|Pedido #${pedido.id}|"></li>
+                    </ol>
+                </nav>
+                <div class="d-flex align-items-center gap-3">
+                    <h1 class="mb-0 h2">Detalle del Pedido <span class="text-muted fw-light" th:text="'#' + *{id}"></span></h1>
+                    <!-- Badge de Estado -->
+                    <span class="badge rounded-pill px-3 py-2 fs-6" th:text="*{estado}"
+                          th:classappend="${pedido.estado.name() == 'PENDIENTE_PAGO' ? 'bg-warning text-dark' : 
+                                           (pedido.estado.name() == 'PAGADO' ? 'bg-success' : 
+                                           (pedido.estado.name() == 'ENVIADO' ? 'bg-info text-dark' : 
+                                           (pedido.estado.name() == 'COMPLETADO' ? 'bg-primary' : 'bg-danger')))}">
+                    </span>
+                </div>
+            </div>
 
-        <div class="row g-4 mt-3">
-            <!-- Columna de Detalles y Estado -->
+            <div class="d-flex gap-2">
+                <a th:href="@{/admin/pedidos}" class="btn btn-outline-secondary rounded-pill px-4">
+                    <i class="bi bi-arrow-left me-2"></i>Volver
+                </a>
+                <!-- Botón PDF -->
+                <a th:href="@{/mis-pedidos/{id}/boleta(id=*{id})}" target="_blank" class="btn btn-danger rounded-pill px-4 shadow-sm">
+                    <i class="bi bi-file-earmark-pdf-fill me-2"></i> Boleta PDF
+                </a>
+            </div>
+        </div>
+
+        <!-- Alerta de Mensajes -->
+        <div th:if="${mensaje}" class="alert alert-success shadow-sm border-0 d-flex align-items-center mb-4">
+            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+            <span th:text="${mensaje}"></span>
+        </div>
+
+        <!-- 2. ESTRUCTURA PRINCIPAL (GRID) -->
+        <div class="row g-4">
+            
+            <!-- COLUMNA IZQUIERDA (Datos y Acciones) -->
             <div class="col-lg-4">
-                <div class="card shadow-sm">
-                    <div class="card-header">Detalles Generales</div>
-                    <div class="card-body">
-                        <p><strong>ID Pedido:</strong> <span th:text="*{id}"></span></p>
-                        <p><strong>Fecha:</strong> <span th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}"></span></p>
-                        <p><strong>Total:</strong> <span class="fw-bold fs-5" th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}|"></span></p>
-                        <hr>
+                
+                <!-- A. Tarjeta de Acciones (Cambiar Estado) -->
+                <div class="card shadow-sm border-0 mb-4 status-card">
+                    <div class="card-body p-4">
+                        <h6 class="section-title text-primary mb-3"><i class="bi bi-gear-fill me-2"></i>Gestionar Pedido</h6>
+                        
                         <form th:action="@{/admin/pedidos/actualizar-estado}" method="post">
                             <input type="hidden" name="pedidoId" th:value="*{id}" />
                             <div class="mb-3">
-                                <label for="estado" class="form-label fw-bold">Actualizar Estado</label>
+                                <label for="estado" class="form-label small fw-bold">Actualizar Estado</label>
                                 <div class="input-group">
-                                    <select id="estado" name="estado" class="form-select">
+                                    <select id="estado" name="estado" class="form-select border-secondary">
                                         <option th:each="est : ${estados}"
                                                 th:value="${est}"
                                                 th:text="${est}"
                                                 th:selected="${est == pedido.estado}"></option>
                                     </select>
-                                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                                    <button type="submit" class="btn btn-update"><i class="bi bi-check-lg"></i></button>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-                <div class="card shadow-sm mt-4">
-                    <div class="card-header">Cliente y Envío</div>
-                    <div class="card-body">
-                        <p><strong>Cliente:</strong> <span th:text="*{nombreCliente}"></span></p>
-                        <p><strong>Email:</strong> <span th:text="*{emailCliente}"></span></p>
-                        <p><strong>Dirección:</strong> <span th:text="*{direccionEnvio}"></span></p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Columna de Productos -->
-            <div class="col-lg-8">
-                <div class="card shadow-sm">
-                    <div class="card-header">Productos en el Pedido</div>
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <li th:each="detalle : *{detalles}" class="list-group-item d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-0" th:text="${detalle.nombreProducto}"></h6>
-                                    <small class="text-muted" th:text="|Talla: ${detalle.nombreTalla}|"></small>
-                                </div>
-                                <div class="text-end">
-                                    <span th:text="|${detalle.cantidad} x S/ ${#numbers.formatDecimal(detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></span><br>
-                                    <span class="fw-bold" th:text="|S/ ${#numbers.formatDecimal(detalle.cantidad * detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></span>
-                                </div>
-                            </li>
-                        </ul>
+                <!-- B. Información del Cliente -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h6 class="section-title"><i class="bi bi-person-lines-fill me-2"></i>Datos del Cliente</h6>
+                        
+                        <div class="info-row mb-3">
+                            <span class="label text-muted small text-uppercase fw-bold">Nombre:</span>
+                            <span class="value fw-bold text-dark" th:text="*{nombreCliente}"></span>
+                        </div>
+                        <div class="info-row mb-3">
+                            <span class="label text-muted small text-uppercase fw-bold">Email:</span>
+                            <span class="value text-break" th:text="*{emailCliente}"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label text-muted small text-uppercase fw-bold">Fecha de Compra:</span>
+                            <span class="value" th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+
+                <!-- C. Información de Envío -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h6 class="section-title"><i class="bi bi-truck me-2"></i>Datos de Envío</h6>
+                        <div class="d-flex align-items-start mt-3">
+                            <i class="bi bi-geo-alt-fill text-danger me-3 fs-4"></i>
+                            <div>
+                                <span class="d-block text-muted small text-uppercase fw-bold">Dirección de Entrega</span>
+                                <p class="fw-bold mb-1 text-dark" th:text="*{direccionEnvio}"></p>
+                                <div th:if="${pedido.ciudadEnvio}">
+                                    <span class="badge bg-light text-dark border" th:text="${pedido.ciudadEnvio}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- Fin Columna Izquierda -->
+
+            <!-- COLUMNA DERECHA (Lista de Productos) -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body p-4 p-md-5">
+                        <h6 class="section-title mb-4"><i class="bi bi-bag-fill me-2"></i>Contenido del Pedido</h6>
+                        
+                        <!-- Lista de Productos -->
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th style="width: 50%;">Producto</th>
+                                        <th class="text-center">Cant.</th>
+                                        <th class="text-end">Precio</th>
+                                        <th class="text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="detalle : *{detalles}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <!-- Imagen con fallback -->
+                                                <img th:src="@{${detalle.urlImagen != null ? detalle.urlImagen : 'https://via.placeholder.com/60'}}" 
+                                                     width="60" height="60" class="rounded border me-3 object-fit-cover" alt="Prod">
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold text-dark" th:text="${detalle.nombreProducto}"></h6>
+                                                    <small class="text-muted">Talla: <span th:text="${detalle.nombreTalla}"></span></small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center fw-bold" th:text="${detalle.cantidad}"></td>
+                                        <td class="text-end text-muted" th:text="|S/ ${#numbers.formatDecimal(detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></td>
+                                        <td class="text-end fw-bold text-primary" th:text="|S/ ${#numbers.formatDecimal(detalle.cantidad * detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Resumen Financiero -->
+                        <div class="row mt-4">
+                            <div class="col-md-6 ms-auto">
+                                <div class="bg-light p-4 rounded-3">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Subtotal</span>
+                                        <span class="fw-bold" th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}|"></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="text-muted">Envío</span>
+                                        <span class="text-success fw-bold">Gratis</span>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fs-5 fw-bold text-dark">Total Pagado</span>
+                                        <span class="fs-3 fw-800 text-primary" th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}|"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div> <!-- Fin Columna Derecha -->
+
+        </div> <!-- Fin Row Principal -->
     </div>
 </th:block>
 </html>

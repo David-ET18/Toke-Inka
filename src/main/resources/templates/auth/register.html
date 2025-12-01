@@ -1,46 +1,64 @@
 <!DOCTYPE html>
-<!-- 
-    Error corregido aquí.
-    Se reemplaza la sintaxis incorrecta por la llamada al fragmento 'layout'
-    pasándole el body actual como parámetro.
--->
 <html lang="es" xmlns:th="http://www.thymeleaf.org" th:insert="~{_layout :: html(content=~{::content})}">
 
 <body>
-    <!-- 
-      Este es el contenido específico de la página de registro.
-      Se pasará a la plantilla _layout.
-    -->
-    <div th:fragment="content" class="container-register">
-        <div class="sub-container">
-            <h2 class="card-title text-center mb-4">Crear una Cuenta</h2>
-            <form class="form-Register" th:action="@{/register}" th:object="${usuario}" method="post">
-                <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombre</label>
-                    <input type="text" id="nombre" class="form-control" th:field="*{nombre}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+    <div th:fragment="content" class="auth-wrapper">
+        <div class="auth-card">
+            <h2 class="text-center">Crear Cuenta</h2>
+            <p class="text-center text-muted mb-4 small">Únete a Toke Inka y disfruta de la moda exclusiva.</p>
+
+            <form th:action="@{/register}" th:object="${usuario}" method="post">
+                
+                <!-- Nombre y Apellido (En una fila para ahorrar espacio visual) -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" id="nombre" class="form-control" th:field="*{nombre}" placeholder="Juan" required>
+                        </div>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="apellido" class="form-label">Apellido</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" id="apellido" class="form-control" th:field="*{apellido}" placeholder="Pérez" required>
+                        </div>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="apellido" class="form-label">Apellido</label>
-                    <input type="text" id="apellido" class="form-control" th:field="*{apellido}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
-                </div>
+
+                <!-- Email -->
                 <div class="mb-3">
                     <label for="email" class="form-label">Correo Electrónico</label>
-                    <input type="email" id="email" class="form-control" th:field="*{email}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" id="email" class="form-control" th:field="*{email}" placeholder="tu@correo.com" required>
+                    </div>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 </div>
-                <div class="mb-3">
+
+                <!-- Password -->
+                <div class="mb-4">
                     <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" id="password" class="form-control" th:field="*{password}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" id="password" class="form-control" th:field="*{password}" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                 </div>
-                <div class="d-grid">
+
+                <!-- Botón -->
+                <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-primary btn-lg">Registrarse</button>
                 </div>
             </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted small">¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a></p>
+            </div>
         </div>
     </div>
 </body>
-
 </html>

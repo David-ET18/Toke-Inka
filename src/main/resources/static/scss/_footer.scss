@@ -1,4 +1,58 @@
-footer {
-    height: 300px;
-    background-color: $glass-color;
+@import "variables";
+
+.footer-toke {
+    background-color: $secondary; // Azul oscuro
+    color: rgba(255, 255, 255, 0.8);
+    padding-top: 60px;
+    padding-bottom: 20px;
+    margin-top: auto; // Empuja el footer al final si hay poco contenido
+
+    h5 {
+        color: $text-light;
+        letter-spacing: 1px;
+        font-size: 1.1rem;
+    }
+
+    .text-accent {
+        color: $accent !important; // Dorado
+    }
+
+    p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    // Enlaces del footer
+    .footer-link {
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        display: block;
+        margin-bottom: 10px;
+        transition: $transition-std;
+        font-size: 0.95rem;
+
+        &:hover {
+            color: $accent;
+            padding-left: 5px; // Pequeña animación de desplazamiento
+        }
+    }
+
+    // Iconos Sociales
+    .social-icons {
+        a {
+            color: $text-light;
+            font-size: 1.5rem;
+            transition: $transition-std;
+            display: inline-block;
+
+            &:hover {
+                color: $accent;
+                transform: translateY(-3px);
+            }
+        }
+    }
+
+    .border-top {
+        border-color: rgba(255,255,255,0.1) !important;
+    }
 }

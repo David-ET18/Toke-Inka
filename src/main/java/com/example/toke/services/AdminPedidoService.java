@@ -47,8 +47,7 @@ public class AdminPedidoService {
 
     @Transactional
     public void eliminarPedido(Long id) {
-        // En un sistema real, considera un "soft delete" (ej. cambiar estado a CANCELADO)
-        // para no perder el historial de ventas.
+        // En un sistema real, considera un "soft delete"
         pedidoRepository.deleteById(id);
     }
 
@@ -72,7 +71,12 @@ public class AdminPedidoService {
         dto.setFechaPedido(pedido.getFechaPedido());
         dto.setEstado(pedido.getEstado());
         dto.setTotal(pedido.getTotal());
+        
+        // Mapeo de dirección
         dto.setDireccionEnvio(pedido.getDireccionEnvio());
+        // ¡LÍNEA IMPORTANTE AGREGADA!
+        // Asumiendo que tu entidad Pedido tiene getCiudadEnvio(). Si no lo tiene, borra esta línea.
+        dto.setCiudadEnvio(pedido.getCiudadEnvio()); 
 
         if (pedido.getUsuario() != null) {
             dto.setNombreCliente(pedido.getUsuario().getNombre() + " " + pedido.getUsuario().getApellido());

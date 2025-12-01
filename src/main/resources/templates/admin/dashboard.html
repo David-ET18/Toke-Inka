@@ -1,110 +1,188 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:with="pageTitle='Panel de Administración | Toke Inca'"
       th:insert="~{_layout :: html(content=~{::content})}">
 
 <th:block th:fragment="content">
-    <div class="container py-4">
+    
+    <!-- Importar Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div class="container py-5 admin-container">
         
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="mb-0">Panel de Administración</h1>
-            <span class="badge bg-primary fs-6">Dashboard</span>
+        <!-- Cabecera -->
+        <div class="admin-header d-flex justify-content-between align-items-end">
+            <div>
+                <h1 class="mb-1">Panel de Control</h1>
+                <p class="mb-0 text-muted">Bienvenido de nuevo, <span sec:authentication="name" class="fw-bold text-primary">Admin</span>.</p>
+            </div>
+            <span class="badge bg-secondary rounded-pill px-3 py-2">
+                <i class="bi bi-calendar-check me-1"></i> Resumen General
+            </span>
         </div>
         
-        <ul class="nav nav-tabs mb-4">
-            <li class="nav-item">
-                <!-- CORREGIDO AQUÍ -->
-            <a class="nav-link" th.href="@{/admin/dashboard}" th:classappend="${requestURI == '/admin/dashboard' ? 'active' : ''}">
+        <!-- Navegación -->
+        <div class="nav-admin mb-5">
+            <a class="nav-link active" th:href="@{/admin/dashboard}">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/productos}"
-                    th:classappend="${requestURI.startsWith('/admin/productos') ? 'active' : ''}">
-                    <i class="bi bi-box-seam"></i> Productos
-                </a>
-            </li>
-             <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/pedidos}"
-                    th:classappend="${requestURI.startsWith('/admin/pedidos') ? 'active' : ''}">
-                    <i class="bi bi-receipt"></i> Pedidos
-                </a>
-            </li>
-        </ul>
-            <hr>
-            <div class="dropdown">
-                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person-circle fs-4 me-2"></i>
-                    <strong><span sec:authentication="name"></span></strong>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                    <li><a class="dropdown-item" th:href="@{/}">Volver a la Tienda</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                         <form th:action="@{/logout}" method="post" class="d-inline">
-                            <button type="submit" class="dropdown-item">Cerrar Sesión</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
+            <a class="nav-link" th:href="@{/admin/productos}">
+                <i class="bi bi-box-seam"></i> Productos
+            </a>
+            <a class="nav-link" th:href="@{/admin/pedidos}">
+                <i class="bi bi-receipt"></i> Pedidos
+            </a>
         </div>
 
-        <!-- Contenido Principal -->
-        <div class="container-fluid p-4" th:object="${estadisticas}">
-            <h1>Dashboard</h1>
-            <p class="lead">Resumen general de la actividad de la tienda.</p>
-
-            <!-- Tarjetas de Estadísticas -->
-            <div class="row g-4 mb-4">
+        <!-- Contenido -->
+        <div th:object="${estadisticas}">
+            
+            <!-- Fila 1: KPIs -->
+            <div class="row g-4 mb-5">
                 <div class="col-md-3">
-                    <div class="card text-white bg-primary">
-                        <div class="card-body">
-                            <h5 class="card-title">Ingresos Totales</h5>
-                            <p class="card-text fs-4" th:text="|S/ ${#numbers.formatDecimal(estadisticas.ingresosTotales, 1, 'COMMA', 2, 'POINT')}|">S/ 0.00</p>
-                        </div>
+                    <div class="stat-card ingresos">
+                        <i class="bi bi-cash-coin stat-icon"></i>
+                        <h5>Ingresos Totales</h5>
+                        <p class="stat-value" th:text="|S/ ${#numbers.formatDecimal(estadisticas.ingresosTotales, 1, 'COMMA', 2, 'POINT')}|">S/ 0.00</p>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card text-white bg-success">
-                        <div class="card-body">
-                            <h5 class="card-title">Pedidos Totales</h5>
-                            <p class="card-text fs-4" th:text="*{totalPedidos}">0</p>
-                        </div>
+                    <div class="stat-card pedidos">
+                        <i class="bi bi-bag-check-fill stat-icon"></i>
+                        <h5>Pedidos Totales</h5>
+                        <p class="stat-value" th:text="*{totalPedidos}">0</p>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card text-white bg-info">
-                        <div class="card-body">
-                            <h5 class="card-title">Usuarios Registrados</h5>
-                            <p class="card-text fs-4" th:text="*{totalUsuarios}">0</p>
-                        </div>
+                    <div class="stat-card usuarios">
+                        <i class="bi bi-people-fill stat-icon"></i>
+                        <h5>Usuarios</h5>
+                        <p class="stat-value" th:text="*{totalUsuarios}">0</p>
                     </div>
                 </div>
-                 <div class="col-md-3">
-                    <div class="card text-white bg-warning">
-                        <div class="card-body">
-                            <h5 class="card-title">Productos Totales</h5>
-                            <p class="card-text fs-4" th:text="*{totalProductos}">0</p>
-                        </div>
+                <div class="col-md-3">
+                    <div class="stat-card productos">
+                        <i class="bi bi-tags-fill stat-icon"></i>
+                        <h5>Productos Activos</h5>
+                        <p class="stat-value" th:text="*{totalProductos}">0</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Productos más vendidos -->
-            <div class="card">
-                <div class="card-header">
-                    <h4>Productos Más Vendidos</h4>
+            <!-- Fila 2: Gráficos y Listas -->
+            <div class="row g-4">
+                
+                <!-- Columna Izquierda: Lista Top 5 -->
+                <div class="col-lg-4">
+                    <div class="top-products-card h-100 shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4><i class="bi bi-star-fill text-warning me-2"></i>Ranking</h4>
+                        </div>
+                        <div class="card-body p-0">
+                             <ul class="list-group list-group-flush" th:if="${not #lists.isEmpty(estadisticas.productosMasVendidos)}">
+                                <li th:each="producto : *{productosMasVendidos}" class="list-group-item d-flex align-items-center">
+                                    <img th:src="${producto.urlImagen != null ? producto.urlImagen : 'https://via.placeholder.com/50'}" 
+                                         style="width: 45px; height: 45px; object-fit: cover;" class="me-3 rounded shadow-sm">
+                                    <div class="flex-grow-1">
+                                        <span class="product-name d-block text-truncate" style="max-width: 150px;" th:text="${producto.nombre}">Nombre</span>
+                                        <small class="text-muted" th:text="${producto.nombreCategoria}">Categoría</small>
+                                    </div>
+                                    <a th:href="@{/producto/{id}(id=${producto.id})}" class="btn btn-sm btn-light text-primary rounded-circle">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div th:if="${#lists.isEmpty(estadisticas.productosMasVendidos)}" class="text-center p-5 text-muted">
+                                <i class="bi bi-bar-chart fs-3 opacity-50"></i>
+                                <p class="mt-2 mb-0">Sin datos suficientes.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                     <ul class="list-group list-group-flush">
-                        <li th:each="producto : *{productosMasVendidos}" class="list-group-item d-flex align-items-center">
-                            <img th:src="${producto.urlImagen}" style="width: 50px; height: 50px; object-fit: cover;" class="me-3 rounded">
-                            <span th:text="${producto.nombre}">Nombre del Producto</span>
-                        </li>
-                    </ul>
+                
+                <!-- Columna Derecha: GRÁFICO REAL -->
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0 h-100" style="border-radius: 12px;">
+                        <div class="card-header bg-white border-bottom p-4">
+                            <h4 class="mb-0 fw-bold text-secondary"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>Productos Más Vendidos</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <div style="width: 100%; height: 350px;">
+                                <canvas id="productsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
+
+    <!-- 2. SCRIPT DINÁMICO CON DATOS REALES -->
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Nombres de productos
+            const labelsReal = /*[[${estadisticas.productosMasVendidos.![nombre]}]]*/ ['Prod A', 'Prod B'];
+            
+            // 2. CANTIDADES VENDIDAS (Ahora sí usamos el campo real)
+            const dataReal = /*[[${estadisticas.productosMasVendidos.![cantidadVendida]}]]*/ [10, 5];
+
+            const ctx = document.getElementById('productsChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar', 
+                data: {
+                    labels: labelsReal,
+                    datasets: [{
+                        label: 'Unidades Vendidas', // Título del dataset
+                        data: dataReal,
+                        backgroundColor: 'rgba(29, 45, 68, 0.8)', // Azul Marino
+                        borderColor: '#1D2D44',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barPercentage: 0.6,
+                        hoverBackgroundColor: '#C05640' // Terracota
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Barras horizontales
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#C05640',
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 14, weight: 'bold' },
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    // Formato del tooltip: "X unidades"
+                                    return context.raw + ' unidades';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { 
+                                stepSize: 1, // Pasos enteros (no vender 1.5 camisetas)
+                                precision: 0 
+                            }, 
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { font: { weight: 'bold' } }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
     
 </th:block>
 </html>

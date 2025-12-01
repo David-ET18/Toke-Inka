@@ -1,71 +1,116 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:with="pageTitle='Mi Perfil'"
+      th:with="pageTitle='Mi Perfil | Toke Inca'"
       th:insert="~{_layout :: html(content=~{::content})}">
 
 <th:block th:fragment="content">
-    <div class="container py-5">
-        <div class="row">
+    <div class="container py-5 account-container">
+        
+        <!-- Encabezado de Sección (Opcional, para dar contexto) -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/}" class="text-decoration-none text-muted">Inicio</a></li>
+                        <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">Mi Cuenta</li>
+                    </ol>
+                </nav>
+                <h2 class="fw-bold text-secondary">Panel de Cliente</h2>
+            </div>
+        </div>
+
+        <div class="row g-4">
             
-            <!-- INICIO: Columna de Navegación Lateral (Ahora directamente aquí) -->
+            <!-- COLUMNA IZQUIERDA: NAVEGACIÓN -->
             <div class="col-lg-3">
-                <div class="mb-4">
-                    <h4 class="fw-bold">Mi Cuenta</h4>
-                    <p class="text-muted">Gestiona tu información y pedidos.</p>
-                </div>
-                <div class="list-group shadow-sm account-nav">
-                    <a th:href="@{/mi-cuenta}" class="list-group-item list-group-item-action py-3" 
-                       th:classappend="${requestURI == '/mi-cuenta' ? 'active' : ''}">
-                       <i class="bi bi-person-fill me-2"></i> Mi Perfil
+                <div class="list-group account-nav sticky-top" style="top: 100px; z-index: 1;">
+                    <!-- Enlace Perfil (Activo) -->
+                    <a th:href="@{/mi-cuenta}" class="list-group-item list-group-item-action active">
+                       <i class="bi bi-person-bounding-box me-3"></i> Mi Perfil
                     </a>
-                    <a th:href="@{/mis-pedidos}" class="list-group-item list-group-item-action py-3"
-                       th:classappend="${#strings.startsWith(requestURI, '/mis-pedidos') ? 'active' : ''}">
-                       <i class="bi bi-receipt me-2"></i> Mis Pedidos
+                    
+                    <!-- Enlace Pedidos -->
+                    <a th:href="@{/mis-pedidos}" class="list-group-item list-group-item-action">
+                       <i class="bi bi-bag-check-fill me-3"></i> Mis Pedidos
                     </a>
+                    
+                    <!-- Botón Salir (Estético dentro del menú) -->
+                    <form th:action="@{/logout}" method="post" class="w-100 m-0 p-0">
+                        <button type="submit" class="list-group-item list-group-item-action text-danger border-top mt-2">
+                            <i class="bi bi-box-arrow-left me-3"></i> Cerrar Sesión
+                        </button>
+                    </form>
                 </div>
             </div>
-            <!-- FIN: Columna de Navegación Lateral -->
             
-            <!-- Columna de Contenido Principal -->
+            <!-- COLUMNA DERECHA: CONTENIDO -->
             <div class="col-lg-9 account-content">
-                <div class="card shadow-sm">
+                <div class="card h-100">
                     <div class="card-body p-4 p-md-5">
-                        <h3 class="card-title mb-4">Información del Perfil</h3>
+                        
+                        <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+                            <div class="bg-light rounded-circle p-3 me-3 text-primary">
+                                <i class="bi bi-pencil-square fs-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="card-title mb-0 border-0 p-0">Información Personal</h3>
+                                <small class="text-muted">Actualiza tus datos de contacto y envío.</small>
+                            </div>
+                        </div>
 
-                        <div th:if="${mensajeExito}" class="alert alert-success d-flex align-items-center" role="alert">
-                            <i class="bi bi-check-circle-fill me-2"></i>
+                        <!-- Alerta de Éxito -->
+                        <div th:if="${mensajeExito}" class="alert alert-success d-flex align-items-center shadow-sm border-0" role="alert">
+                            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
                             <div th:text="${mensajeExito}"></div>
                         </div>
                         
-                        <form th:action="@{/mi-cuenta/actualizar}" th:object="${perfil}" method="post">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
+                        <!-- Formulario -->
+                        <form th:action="@{/mi-cuenta/actualizar}" th:object="${perfil}" method="post" class="mt-4">
+                            
+                            <div class="row g-3">
+                                <!-- Nombre y Apellido -->
+                                <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Nombre">
+                                        <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Nombre" required>
                                         <label for="nombre">Nombre</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="apellido" th:field="*{apellido}" placeholder="Apellido">
+                                        <input type="text" class="form-control" id="apellido" th:field="*{apellido}" placeholder="Apellido" required>
                                         <label for="apellido">Apellido</label>
                                     </div>
                                 </div>
+
+                                <!-- Email (Read Only) -->
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input type="email" class="form-control bg-light" id="email" th:field="*{email}" placeholder="Email" readonly>
+                                        <label for="email"><i class="bi bi-lock-fill me-1"></i> Correo Electrónico (No editable)</label>
+                                    </div>
+                                </div>
+
+                                <!-- Teléfono -->
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="telefono" th:field="*{telefono}" placeholder="Teléfono">
+                                        <label for="telefono">Teléfono / Celular</label>
+                                    </div>
+                                </div>
+
+                                <!-- Dirección -->
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="direccion" th:field="*{direccion}" placeholder="Dirección">
+                                        <label for="direccion">Dirección de Envío</label>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Email" readonly>
-                                <label for="email">Correo Electrónico (no editable)</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="telefono" th:field="*{telefono}" placeholder="Teléfono">
-                                <label for="telefono">Teléfono</label>
-                            </div>
-                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="direccion" th:field="*{direccion}" placeholder="Dirección">
-                                <label for="direccion">Dirección</label>
-                            </div>
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary px-4">Guardar Cambios</button>
+
+                            <div class="d-flex justify-content-end mt-5">
+                                <button type="submit" class="btn btn-primary px-5 py-3 rounded-pill fw-bold shadow-sm">
+                                    <i class="bi bi-save me-2"></i> Guardar Cambios
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -74,5 +119,4 @@
         </div>
     </div>
 </th:block>
-
 </html>

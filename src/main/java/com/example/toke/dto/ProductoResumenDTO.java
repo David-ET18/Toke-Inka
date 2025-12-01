@@ -9,4 +9,5 @@ public class ProductoResumenDTO {
     private BigDecimal precio;
     private String urlImagen;
     private String nombreCategoria;
+    private Long cantidadVendida; 
 }

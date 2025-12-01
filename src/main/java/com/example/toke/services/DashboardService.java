@@ -65,17 +65,25 @@ public class DashboardService {
     }
 
     private ProductoResumenDTO mapToProductoResumenDTO(Object[] resultado) {
+        // 1. Extraer la entidad Producto (posición 0)
         Producto producto = (Producto) resultado[0];
-        //Long cantidadVendida = (Long) resultado[1]; // Podrías usar este dato si quieres mostrarlo
+        
+        // 2. Extraer la Cantidad Vendida (posición 1)
+        Long cantidadVendida = (Long) resultado[1]; 
         
         ProductoResumenDTO dto = new ProductoResumenDTO();
         dto.setId(producto.getId());
         dto.setNombre(producto.getNombre());
         dto.setPrecio(producto.getPrecio());
         dto.setUrlImagen(producto.getUrlImagen());
+        
         if (producto.getCategoria() != null) {
             dto.setNombreCategoria(producto.getCategoria().getNombre());
         }
+        
+        // 3. ¡ASIGNAR EL DATO AL DTO!
+        dto.setCantidadVendida(cantidadVendida != null ? cantidadVendida : 0L);
+        
         return dto;
     }
 }

@@ -1,76 +1,162 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:with="pageTitle='Gestión de Pedidos'"
+      th:with="pageTitle='Gestión de Pedidos | Admin'"
       th:insert="~{_layout :: html(content=~{::content})}">
 
 <th:block th:fragment="content">
-    <div class="container py-4">
-        <h1>Gestión de Pedidos</h1>
+    <div class="container py-5 admin-container">
         
-        <!-- Menú de navegación del Admin -->
-        <ul class="nav nav-tabs mb-4">
-    <li class="nav-item">
-        <!-- CORREGIDO: Usamos ${requestURI} -->
-        <a class="nav-link" th:href="@{/admin/dashboard}" th:classappend="${requestURI == '/admin/dashboard' ? 'active' : ''}">
-            <i class="bi bi-speedometer2"></i> Dashboard
-        </a>
-    </li>
-    <li class="nav-item">
-        <!-- CORREGIDO: Usamos ${requestURI} -->
-        <a class="nav-link" th:href="@{/admin/productos}" th:classappend="${requestURI.startsWith('/admin/productos') ? 'active' : ''}">
-            <i class="bi bi-box-seam"></i> Productos
-        </a>
-    </li>
-    <li class="nav-item">
-        <!-- CORREGIDO: Usamos ${requestURI} -->
-        <a class="nav-link" th:href="@{/admin/pedidos}" th:classappend="${requestURI.startsWith('/admin/pedidos') ? 'active' : ''}">
-            <i class="bi bi-receipt"></i> Pedidos
-        </a>
-    </li>
-</ul>
+        <!-- Cabecera Admin -->
+        <div class="admin-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-1">Pedidos</h1>
+                <p class="mb-0 text-muted">Supervisa y gestiona las órdenes de compra.</p>
+            </div>
+            <!-- Opcional: Botón de exportar -->
+            <button class="btn btn-outline-secondary rounded-pill px-4 shadow-sm" disabled>
+                <i class="bi bi-download me-2"></i>Exportar
+            </button>
+        </div>
+        
+        <!-- Navegación Interna (Consistente) -->
+        <div class="nav-admin mb-4">
+            <a class="nav-link" th:href="@{/admin/dashboard}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a class="nav-link" th:href="@{/admin/productos}">
+                <i class="bi bi-box-seam"></i> Productos
+            </a>
+            <!-- ACTIVO -->
+            <a class="nav-link active" th:href="@{/admin/pedidos}">
+                <i class="bi bi-receipt"></i> Pedidos
+            </a>
+        </div>
 
-        <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+        <!-- Alerta de Éxito -->
+        <div th:if="${mensaje}" class="alert alert-success d-flex align-items-center shadow-sm border-0 mb-4">
+            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+            <span th:text="${mensaje}"></span>
+        </div>
 
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>ID Pedido</th>
-                                <th>Cliente</th>
-                                <th>Fecha</th>
-                                <th>Total</th>
-                                <th>Estado</th>
-                                <th class="text-end">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="pedido : ${pedidos}">
-                                <td th:text="'#' + ${pedido.id}"></td>
-                                <td th:text="${pedido.nombreCliente}"></td>
-                                <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}"></td>
-                                <td th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}|"></td>
-                                <td>
-                                    <span class="badge" th:text="${pedido.estado}"
-                                          th:classappend="${pedido.estado.name() == 'PENDIENTE' ? 'bg-secondary' : 
-                                                           (pedido.estado.name() == 'PAGADO' ? 'bg-primary' : 
-                                                           (pedido.estado.name() == 'ENVIADO' ? 'bg-info text-dark' : 
-                                                           (pedido.estado.name() == 'ENTREGADO' ? 'bg-success' : 'bg-danger')))}">
-                                    </span>
-                                </td>
-                                <td class="text-end">
-                                    <a th:href="@{/admin/pedidos/{id}(id=${pedido.id})}" class="btn btn-outline-primary btn-sm me-1" title="Ver Detalle"><i class="bi bi-eye"></i></a>
-                                    <form th:action="@{/admin/pedidos/eliminar/{id}(id=${pedido.id})}" method="post" class="d-inline" onsubmit="return confirm('¿Estás seguro? Esta acción no se puede deshacer.');">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Eliminar"><i class="bi bi-trash"></i></button>
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Tarjeta de Tabla -->
+        <div class="admin-table-card">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">ID Pedido</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <!-- Estado Vacío -->
+                        <tr th:if="${#lists.isEmpty(pedidos)}">
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-clipboard-x fs-1 d-block mb-3 opacity-25"></i>
+                                No hay pedidos registrados.
+                            </td>
+                        </tr>
+
+                        <!-- Iteración -->
+                        <tr th:each="pedido : ${pedidos}">
+                            <td class="ps-4">
+                                <span class="badge bg-light text-dark border fw-bold" th:text="'#' + ${pedido.id}">#ID</span>
+                            </td>
+                            
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-2">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                    <span class="fw-bold text-secondary" th:text="${pedido.nombreCliente}">Cliente</span>
+                                </div>
+                            </td>
+                            
+                            <td class="text-muted" th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}"></td>
+                            
+                            <td class="price-cell" th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 'COMMA', 2, 'POINT')}|"></td>
+                            
+                            <td>
+                                <!-- Lógica de colores para los estados -->
+                                <span class="badge rounded-pill px-3 fw-normal" 
+                                      th:text="${pedido.estado}"
+                                      th:classappend="${
+                                        pedido.estado.name() == 'PENDIENTE_PAGO' ? 'bg-warning text-dark' : 
+                                        (pedido.estado.name() == 'PAGADO' ? 'bg-success' : 
+                                        (pedido.estado.name() == 'ENVIADO' ? 'bg-info text-dark' : 
+                                        (pedido.estado.name() == 'ENTREGADO' ? 'bg-primary' : 
+                                        (pedido.estado.name() == 'CANCELADO' ? 'bg-danger' : 'bg-secondary'))))
+                                      }">
+                                </span>
+                            </td>
+                            
+                            <td class="text-end pe-4">
+                                <!-- Botón Ver Detalle -->
+                                <a th:href="@{/admin/pedidos/{id}(id=${pedido.id})}" 
+                                   class="btn-action edit me-1" 
+                                   data-bs-toggle="tooltip" title="Ver Detalle">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                                
+                                <!-- Botón Eliminar con SweetAlert -->
+                                <button type="button" class="btn-action delete" 
+                                        th:onclick="'confirmarEliminacion(' + ${pedido.id} + ')'"
+                                        title="Eliminar">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+
+                                <form th:id="'deleteForm-' + ${pedido.id}" 
+                                      th:action="@{/admin/pedidos/eliminar/{id}(id=${pedido.id})}" 
+                                      method="post" class="d-none">
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+
+    <!-- ========================================== -->
+    <!-- SCRIPTS                                    -->
+    <!-- ========================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmarEliminacion(id) {
+            Swal.fire({
+                title: '¿Eliminar Pedido?',
+                text: "Esta acción borrará el historial de este pedido permanentemente.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteForm-' + id).submit();
+                }
+            })
+        }
+
+        // --- SOLUCIÓN DEL ERROR ---
+        // Esperamos a que la ventana cargue completamente (incluyendo el script de Bootstrap del layout)
+        window.addEventListener('load', function() {
+            // Verificamos si Bootstrap cargó correctamente para evitar errores
+            if (typeof bootstrap !== 'undefined') {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            } else {
+                console.warn("Bootstrap no está definido. Los tooltips no funcionarán, pero la página no se romperá.");
+            }
+        });
+    </script>
 </th:block>
 </html>

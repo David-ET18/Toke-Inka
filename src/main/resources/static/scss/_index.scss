@@ -1,16 +1,57 @@
 @import "variables";
 
-.container-Bienvenida-mssg {
-    box-shadow: $box-shadow-L;
-    padding-block: $padding;
-    width: 100vw;
-    background-color: $glass-color;
-    display: flex;
-    .container {
-        flex: 1;
-        width: 100vh;
-        .Bienvenido-MSSG {}
+// 1. Estilo para las Imágenes del Carrusel
+.hero-img {
+    height: 60vh; // Altura responsiva (60% de la ventana)
+    min-height: 400px;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.9); // Un toque oscuro para elegancia
+}
 
-        .Bienvenida-parrafo {}
+// 2. Banner de Bienvenida (Marquee)
+.container-Bienvenida-mssg {
+    background-color: $secondary; // Azul marino
+    color: white;
+    box-shadow: $shadow-md; // VARIABLE CORREGIDA
+    border-top: 4px solid $accent; // Borde dorado arriba
+    border-bottom: 4px solid $accent;
+
+    .Bienvenido-MSSG {
+        font-family: $font-title;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: $accent; // Texto Dorado
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
+
+    .Bienvenida-parrafo {
+        font-family: $font-body;
+        font-size: 1.1rem;
+        font-weight: 300;
+        opacity: 0.9;
+    }
+}
+
+// 3. Estilos Específicos de las Tarjetas (Sobreescribe _productos.scss si es necesario)
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+    
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: $shadow-glass; // Sombra moderna
+        border-color: $accent;
+        
+        .btn-outline-primary {
+            background-color: $primary;
+            color: white;
+        }
+    }
+}
+
+// 4. Botón con transición suave
+.transition-btn {
+    transition: all 0.3s ease;
 }

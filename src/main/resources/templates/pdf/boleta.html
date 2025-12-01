@@ -1,89 +1,223 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
+    <title>Boleta de Venta Electrónica</title>
     <style>
-        body { font-family: 'Helvetica', sans-serif; font-size: 12px; color: #333; }
-        .container { width: 100%; margin: 0 auto; }
-        .header h1 { margin: 0; color: #000; }
-        .invoice-details table, .items-table { width: 100%; border-collapse: collapse; }
-        .invoice-details td { padding: 5px; }
-        .items-table th, .items-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .items-table th { background-color: #f2f2f2; }
+        /* CONFIGURACIÓN DE PÁGINA */
+        @page {
+            size: A4;
+            margin: 2.5cm;
+        }
+        
+        /* ESTILOS GENERALES */
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 13px;
+            color: #333333;
+            line-height: 1.4;
+        }
+        
+        .text-primary { color: #C05640; } /* Terracota */
+        .text-secondary { color: #1D2D44; } /* Azul Marino */
+        .fw-bold { font-weight: bold; }
         .text-right { text-align: right; }
-        .total { margin-top: 20px; text-align: right; }
-        .total h3 { margin: 0; }
-        .footer { margin-top: 50px; text-align: center; font-size: 10px; color: #777; }
-        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+        .text-center { text-align: center; }
+        .text-uppercase { text-transform: uppercase; }
+        .small { font-size: 10px; color: #777; }
+
+        /* ESTRUCTURA */
+        table { width: 100%; border-collapse: collapse; }
+        
+        /* CABECERA */
+        .header-table td { vertical-align: top; }
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1D2D44;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+        .invoice-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .invoice-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1D2D44;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .invoice-number {
+            font-size: 14px;
+            color: #C05640;
+        }
+
+        /* INFORMACIÓN DEL CLIENTE */
+        .info-section { margin-top: 30px; margin-bottom: 30px; }
+        .info-label { 
+            color: #777; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            font-weight: bold;
+        }
+        .info-value {
+            font-size: 13px;
+            color: #000;
+            margin-bottom: 10px;
+        }
+
+        /* TABLA DE PRODUCTOS */
+        .items-table { margin-top: 20px; }
+        .items-table th {
+            background-color: #1D2D44;
+            color: #ffffff;
+            padding: 10px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .items-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eeeeee;
+            vertical-align: middle;
+        }
+        .items-table tr:last-child td { border-bottom: 2px solid #1D2D44; }
+
+        /* TOTALES */
+        .totals-table { margin-top: 20px; float: right; width: 40%; }
+        .totals-table td { padding: 5px 0; }
+        .total-final {
+            font-size: 18px;
+            font-weight: bold;
+            color: #C05640;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <table style="width: 100%; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
+
+    <!-- CABECERA -->
+    <table class="header-table">
+        <tr>
+            <!-- Lado Izquierdo: Datos Empresa -->
+            <td style="width: 60%;">
+                <h1 class="company-name">TOKE INKA</h1>
+                <p style="margin: 5px 0 0 0; color: #555;">Moda con Identidad</p>
+                <br />
+                <div style="font-size: 12px; line-height: 1.5;">
+                    <strong>RUC:</strong> 20123456789<br />
+                    <strong>Dirección:</strong> Av. La Moda 123, San Isidro, Lima<br />
+                    <strong>Email:</strong> hola@tokeinka.com<br />
+                    <strong>Teléfono:</strong> +51 999 999 999
+                </div>
+            </td>
+            
+            <!-- Lado Derecho: Recuadro de Boleta -->
+            <td style="width: 40%; text-align: right;">
+                <div class="invoice-box">
+                    <span class="invoice-title">BOLETA DE VENTA ELECTRÓNICA</span>
+                    <span class="invoice-number" th:text="|N° B001-${#numbers.formatInteger(pedido.id, 8)}|">N° B001-00000123</span>
+                    <div style="margin-top: 5px; font-size: 11px; color: #666;">
+                        Fecha de Emisión: <span th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}">01/01/2025</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- DATOS DEL CLIENTE -->
+    <div class="info-section">
+        <table style="width: 100%;">
             <tr>
-                <td style="width: 50%;">
-                    <h1>Toke Inca</h1>
-                    <!-- CORRECCIÓN: Se usa <br /> en lugar de <br> -->
-                    <p>RUC: 20123456789<br />
-                    Av. Principal 123, Lima, Perú</p>
+                <td style="width: 50%; vertical-align: top;">
+                    <div class="info-label">Señor(a):</div>
+                    <div class="info-value" th:text="${pedido.nombreCliente}">Juan Pérez</div>
                 </td>
-                <td style="width: 50%; text-align: right;">
-                    <h2>BOLETA DE VENTA</h2>
-                     <!-- LÍNEA CORREGIDA -->
-                    <p>
-                        <p>
-                            <strong>N°:</strong>
-                            <span th:text="|B001-${#numbers.formatInteger(pedido.id, 8)}|"></span>
-                        </p>
-                    </p>
+                <td style="width: 50%; vertical-align: top;">
+                    <div class="info-label">Dirección de Envío:</div>
+                    <div class="info-value" th:text="${pedido.direccionEnvio}">Av. Siempre Viva 123</div>
                 </td>
             </tr>
+            <!-- Puedes agregar DNI aquí si lo tienes en el objeto pedido -->
         </table>
-
-        <div class="invoice-details" style="margin-top: 20px; margin-bottom: 30px;">
-            <table>
-                <tr>
-                    <td style="width: 100px;"><strong>Cliente:</strong></td>
-                    <td th:text="${pedido.nombreCliente}"></td>
-                </tr>
-                <tr>
-                    <td><strong>Dirección:</strong></td>
-                    <td th:text="${pedido.direccionEnvio}"></td>
-                </tr>
-                <tr>
-                    <td><strong>Fecha de Emisión:</strong></td>
-                    <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}"></td>
-                </tr>
-            </table>
-        </div>
-
-        <table class="items-table">
-            <thead>
-                <tr>
-                    <th>Descripción</th>
-                    <th style="width: 60px;">Cantidad</th>
-                    <th class="text-right" style="width: 100px;">Precio Unit.</th>
-                    <th class="text-right" style="width: 100px;">Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="detalle : ${pedido.detalles}">
-                    <td th:text="${detalle.nombreProducto + ' (Talla: ' + detalle.nombreTalla + ')'}"></td>
-                    <td th:text="${detalle.cantidad}" style="text-align: center;"></td>
-                    <td class="text-right" th:text="|S/ ${#numbers.formatDecimal(detalle.precioUnitario, 1, 2, 'COMMA')}|"></td>
-                    <td class="text-right" th:text="|S/ ${#numbers.formatDecimal(detalle.cantidad * detalle.precioUnitario, 1, 2, 'COMMA')}|"></td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="total">
-            <h3>TOTAL: <span th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 2, 'COMMA')}|"></span></h3>
-        </div>
-
-        <div class="footer">
-            <hr /> <!-- CORRECCIÓN: Se usa <hr /> en lugar de <hr> -->
-            <p>Gracias por su compra en Toke Inca.</p>
-        </div>
     </div>
+
+    <!-- TABLA DE PRODUCTOS -->
+    <table class="items-table" style="width: 100%;">
+        <thead>
+            <tr>
+                <th style="width: 50%;">Descripción</th>
+                <th style="width: 15%; text-align: center;">Talla</th>
+                <th style="width: 10%; text-align: center;">Cant.</th>
+                <th style="width: 15%; text-align: right;">P. Unit.</th>
+                <th style="width: 10%; text-align: right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="detalle : ${pedido.detalles}">
+                <td>
+                    <span style="font-weight: bold;" th:text="${detalle.nombreProducto}">Camiseta Inka</span>
+                </td>
+                <td style="text-align: center;" th:text="${detalle.nombreTalla}">M</td>
+                <td style="text-align: center;" th:text="${detalle.cantidad}">1</td>
+                <td style="text-align: right;" th:text="|${#numbers.formatDecimal(detalle.precioUnitario, 1, 2, 'POINT')}|">50.00</td>
+                <td style="text-align: right;" th:text="|${#numbers.formatDecimal(detalle.cantidad * detalle.precioUnitario, 1, 2, 'POINT')}|">50.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- TOTALES -->
+    <table style="width: 100%; margin-top: 10px;">
+        <tr>
+            <td style="width: 60%;">
+                <!-- Espacio para observaciones o QR -->
+                <p class="small" style="margin-top: 20px;">
+                    * Los precios incluyen IGV.<br />
+                    * Conserve este documento para cambios o devoluciones.
+                </p>
+            </td>
+            <td style="width: 40%;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="text-align: right; padding: 5px;">Subtotal:</td>
+                        <!-- Cálculo aproximado del subtotal sin IGV (opcional) -->
+                        <td style="text-align: right; padding: 5px;" th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 2, 'COMMA')}|">S/ 100.00</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; padding: 5px;">Descuento:</td>
+                        <td style="text-align: right; padding: 5px;">S/ 0.00</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; padding: 10px 5px; font-size: 16px; font-weight: bold; color: #1D2D44;">TOTAL A PAGAR:</td>
+                        <td style="text-align: right; padding: 10px 5px; font-size: 18px; font-weight: bold; color: #C05640;" th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 2, 'COMMA')}|">S/ 100.00</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p>Gracias por comprar en <strong>Toke Inca</strong>. Esperamos verte pronto.</p>
+        <p>www.tokeinka.com</p>
+    </div>
+
 </body>
 </html>

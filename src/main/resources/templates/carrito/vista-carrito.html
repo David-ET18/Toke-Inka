@@ -1,81 +1,134 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:with="pageTitle='Tu Carrito de Compras'"
+      th:with="pageTitle='Tu Carrito | Toke Inca'"
       th:insert="~{_layout :: html(content=~{::content})}">
 
-<!-- El <body> se ignora, pero la estructura debe ser un documento HTML válido -->
 <body>
-
-<!-- Define el fragmento que se pasará como 'content' al layout -->
+<!-- Fragmento de contenido -->
 <th:block th:fragment="content">
-    <div class="container py-4">
+    
+    <div class="container py-5 cart-view">
 
-        <!-- Título y Botón para Seguir Comprando -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="fw-bold">Tu Carrito de Compras</h1>
-            <a th:href="@{/productos}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Seguir Comprando
+        <!-- Encabezado -->
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h1 class="fw-bold mb-0">Tu Carrito</h1>
+                <p class="text-muted mb-0">Revisa tus prendas antes de finalizar.</p>
+            </div>
+            <a th:href="@{/productos}" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                <i class="bi bi-arrow-left me-2"></i> Seguir Comprando
             </a>
         </div>
 
-        <!-- Vista para carrito vacío -->
-        <div th:if="${carrito == null or #lists.isEmpty(carrito.items)}" class="text-center py-5">
-            <div class="card shadow-sm border-0" style="max-width: 500px; margin: auto;">
-                <div class="card-body p-5">
-                    <i class="bi bi-cart-x" style="font-size: 5rem; color: #6c757d;"></i>
-                    <h2 class="card-title mt-3">Tu carrito está vacío</h2>
-                    <p class="card-text text-muted">Añade productos para empezar a comprar.</p>
-                    <a th:href="@{/productos}" class="btn btn-primary mt-3">Explorar Productos</a>
+        <!-- VISTA: Carrito Vacío -->
+        <div th:if="${carrito == null or #lists.isEmpty(carrito.items)}" class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="empty-cart-container">
+                    <i class="bi bi-bag-x" style="font-size: 5rem;"></i>
+                    <h2 class="mt-3">Tu bolsa está vacía</h2>
+                    <p class="text-muted mb-4">Parece que aún no has encontrado tu estilo ideal.</p>
+                    <a th:href="@{/productos}" class="btn btn-primary btn-lg rounded-pill px-5">
+                        Ver Catálogo
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Vista para carrito con items -->
+        <!-- VISTA: Carrito con Productos -->
+        <!-- La clase 'row g-5' es necesaria para que tu JS encuentre el contenedor -->
         <div th:if="${carrito != null and not #lists.isEmpty(carrito.items)}" class="row g-5">
+            
+            <!-- Columna Izquierda: Lista de Items -->
             <div class="col-lg-8">
-                <div class="d-flex justify-content-between align-items-baseline border-bottom pb-2 mb-3">
-                    <h4 class="mb-0">Productos</h4>
-                    <span class="text-muted" th:text="|${#lists.size(carrito.items)} items|"></span>
+                
+                <!-- Encabezado de lista -->
+                <div class="d-flex justify-content-between align-items-end border-bottom pb-3 mb-4">
+                    <h5 class="mb-0 text-secondary fw-bold">Productos Agregados</h5>
+                    <span class="badge bg-light text-dark border rounded-pill px-3" 
+                          th:text="|${#lists.size(carrito.items)} prendas|"></span>
                 </div>
-                <div th:each="item : ${carrito.items}" class="card mb-3 border-0 shadow-sm cart-item-row" th:data-product-id="${item.productoId}" th:data-talla-id="${item.tallaId}">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md-2 text-center">
-                                <img th:src="${item.urlImagen}" style="width: 100px; height: 100px; object-fit: cover;" class="img-fluid rounded">
+
+                <!-- Iteración de Items -->
+                <!-- MANTENEMOS LAS CLASES Y DATA ATTRIBUTES PARA EL JS -->
+                <div th:each="item : ${carrito.items}" 
+                     class="card cart-item-row" 
+                     th:data-product-id="${item.productoId}" 
+                     th:data-talla-id="${item.tallaId}">
+                    
+                    <div class="card-body p-4">
+                        <div class="row align-items-center gy-3">
+                            
+                            <!-- Imagen -->
+                            <div class="col-md-2 col-4">
+                                <img th:src="${item.urlImagen != null ? item.urlImagen : 'https://via.placeholder.com/150'}" 
+                                     class="img-fluid" alt="Producto">
                             </div>
-                            <div class="col-md-4">
-                                <h5 class="mb-1" th:text="${item.nombreProducto}"></h5>
-                                <p class="text-muted small mb-1" th:text="|Talla: ${item.nombreTalla}|"></p>
-                                <p class="text-muted small" th:text="|Precio unitario: S/ ${#numbers.formatDecimal(item.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></p>
+
+                            <!-- Info -->
+                            <div class="col-md-4 col-8">
+                                <a th:href="@{/producto/{id}(id=${item.productoId})}" class="item-title h5 mb-1 d-block" th:text="${item.nombreProducto}">Nombre</a>
+                                <p class="text-muted small mb-1 text-uppercase" th:text="|Talla: ${item.nombreTalla}|">Talla</p>
+                                <p class="text-muted small mb-0" th:text="|Unitario: S/ ${#numbers.formatDecimal(item.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></p>
                             </div>
-                            <div class="col-md-3">
-                                <div class="input-group" style="max-width: 150px;">
-                                    <button class="btn btn-outline-secondary btn-minus" type="button">-</button>
-                                    <input type="text" class="form-control text-center quantity-input fw-bold" th:value="${item.cantidad}" readonly>
-                                    <button class="btn btn-outline-secondary btn-plus" type="button">+</button>
+
+                            <!-- Cantidad (Controles JS) -->
+                            <div class="col-md-3 col-6 d-flex justify-content-md-center">
+                                <div class="quantity-control shadow-sm">
+                                    <button class="btn btn-minus" type="button"><i class="bi bi-dash"></i></button>
+                                    <input type="text" class="quantity-input" th:value="${item.cantidad}" readonly>
+                                    <button class="btn btn-plus" type="button"><i class="bi bi-plus"></i></button>
                                 </div>
                             </div>
-                            <div class="col-md-3 text-end">
-                                <p class="fw-bold fs-5 mb-2 item-subtotal" th:text="|S/ ${#numbers.formatDecimal(item.getSubtotal(), 1, 'COMMA', 2, 'POINT')}|"></p>
-                                <button class="btn btn-sm btn-link text-danger btn-delete">
-                                    <i class="bi bi-trash"></i> Quitar
+
+                            <!-- Subtotal y Eliminar -->
+                            <div class="col-md-3 col-6 text-end">
+                                <p class="fw-bold fs-5 mb-2 item-subtotal text-primary" 
+                                   th:text="|S/ ${#numbers.formatDecimal(item.getSubtotal(), 1, 'COMMA', 2, 'POINT')}|"></p>
+                                
+                                <button class="btn btn-sm btn-delete px-3 py-1">
+                                    <i class="bi bi-trash3 me-1"></i> Quitar
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Columna Derecha: Resumen (Sticky) -->
             <div class="col-lg-4">
-                <div class="card shadow-sm border-0 position-sticky" style="top: 2rem;">
-                    <div class="card-body">
-                        <h4 class="card-title">Resumen del Pedido</h4>
-                        <hr>
-                        <ul class="list-group list-group-flush mb-3">
-                            <li class="list-group-item d-flex justify-content-between"><span>Subtotal</span><span id="subtotal-summary" th:text="|S/ ${#numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}|"></span></li>
-                            <li class="list-group-item d-flex justify-content-between"><span>Envío</span><span>Gratis</span></li>
-                            <li class="list-group-item d-flex justify-content-between fw-bold fs-5 border-top pt-3"><span>Total</span><strong id="grand-total" th:text="|S/ ${#numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}|"></strong></li>
-                        </ul>
-                        <div class="d-grid"><a th:href="@{/checkout}" class="btn btn-primary btn-lg">Proceder al Pago</a></div>
+                <div class="summary-card">
+                    <h4 class="mb-4">Resumen del Pedido</h4>
+                    
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Subtotal</span>
+                            <span id="subtotal-summary" class="fw-bold" 
+                                  th:text="|S/ ${#numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}|"></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Envío</span>
+                            <span class="text-success fw-bold"><i class="bi bi-truck me-1"></i>Gratis</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center mt-2">
+                            <span>Total a Pagar</span>
+                            <strong id="grand-total" class="fs-4 text-primary" 
+                                    th:text="|S/ ${#numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}|"></strong>
+                        </li>
+                    </ul>
+
+                    <div class="d-grid">
+                        <a th:href="@{/checkout}" class="btn btn-checkout text-white">
+                            Proceder al Pago <i class="bi bi-credit-card ms-2"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <small class="text-muted d-block mb-2"><i class="bi bi-shield-lock"></i> Compra 100% Segura</small>
+                        <div class="opacity-50">
+                            <i class="bi bi-credit-card-2-front fs-5 mx-1"></i>
+                            <i class="bi bi-paypal fs-5 mx-1"></i>
+                            <i class="bi bi-bank fs-5 mx-1"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -83,4 +136,5 @@
     </div>
 </th:block>
 
+</body>
 </html>

@@ -1,42 +1,145 @@
 @import "variables";
 
-.headerPag {
-    height: 80px;
-    background-color: $glass-color;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.header-pag {
+    // Glassmorphism effect
+    @include glass-effect;
+    height: auto; // Flexible para móvil
+    min-height: $header-height;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    
+    .navbar {
+        padding: 0.8rem 0;
+    }
 
-    .container {
-        display: flex;
-        justify-content: space-between;
-
-        .sub-container:nth-child(1) {
-            display: flex;
-            justify-content: space-between;
-
-            .navbar-brand {
-                .img-logo {
-                    width: 80px;
-                    height: 70px;
-                }
-            }
+    // 1. Marca / Logo
+    .navbar-brand {
+        font-family: $font-title;
+        font-weight: 800;
+        font-size: 1.4rem;
+        color: $primary !important;
+        letter-spacing: -0.5px;
+        
+        .img-logo {
+            height: 45px; // Tamaño controlado
+            width: auto;
+            transition: transform 0.3s ease;
         }
 
-        //.sub-container:nth-child(2) {}
+        &:hover .img-logo {
+            transform: rotate(-10deg) scale(1.1);
+        }
+    }
 
-        .sub-container:nth-child(3) {
-            .collapse {
-                ul {
-                    li {
-                        padding: $padding-s;
-                        a {
-                            @include estilo-boton;
-                            background-color: transparent !important;
-                        }
-                    }
-                }
+    // 2. Enlaces de Navegación
+    .nav-links-center {
+        .nav-link {
+            font-family: $font-body;
+            font-weight: 600;
+            color: $secondary !important;
+            margin: 0 10px;
+            position: relative;
+            
+            // Efecto de subrayado animado
+            &::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: 0;
+                left: 0;
+                background-color: $accent;
+                transition: width 0.3s ease;
             }
+
+            &:hover::after, &.active::after {
+                width: 100%;
+            }
+        }
+    }
+
+    // 3. Botón de Carrito
+    .btn-icon-cart {
+        font-size: 1.3rem;
+        color: $secondary !important;
+        transition: $transition-std;
+        
+        &:hover {
+            color: $primary !important;
+            transform: translateY(-2px);
+        }
+    }
+
+    // 4. Botón Login (Estilo píldora)
+    .btn-outline-primary {
+        color: $primary;
+        border-color: $primary;
+        font-weight: 600;
+        
+        &:hover {
+            background-color: $primary;
+            color: white;
+            box-shadow: 0 4px 15px rgba($primary, 0.4);
+        }
+    }
+
+    // 5. Usuario Logueado (Dropdown)
+    .user-pill {
+        background-color: rgba($secondary, 0.05);
+        padding: 5px 15px 5px 5px;
+        border-radius: $radius-pill;
+        transition: $transition-std;
+
+        .avatar-circle {
+            width: 32px;
+            height: 32px;
+            background-color: $primary;
+            color: white;
+            border-radius: 50%;
+            @include flex-center;
+            font-size: 0.9rem;
+        }
+
+        &:hover {
+            background-color: rgba($secondary, 0.1);
+        }
+    }
+
+    // 6. Animación del Dropdown
+    .dropdown-menu {
+        border-radius: $radius-md;
+        overflow: hidden;
+        margin-top: 10px !important; // Espacio
+        
+        .dropdown-item {
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            
+            &:hover {
+                background-color: rgba($primary, 0.05);
+                color: $primary;
+            }
+            
+            i { opacity: 0.7; }
+        }
+    }
+}
+
+// Ajustes Responsive
+@media (max-width: 991px) {
+    .header-pag {
+        .navbar-collapse {
+            background: white;
+            padding: 20px;
+            border-radius: $radius-md;
+            margin-top: 10px;
+            box-shadow: $shadow-md;
+        }
+        
+        .nav-links-center {
+            margin-bottom: 20px !important;
+            text-align: center;
         }
     }
 }

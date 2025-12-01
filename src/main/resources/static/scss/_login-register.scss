@@ -1,20 +1,62 @@
 @import "variables";
 
-.container-login,
-.container-register {
+.auth-wrapper {
     display: flex;
     justify-content: center;
-    margin-block: $margin-xL;
+    align-items: center;
+    min-height: 70vh; // Centrado verticalmente
+    padding: 40px 20px;
 
-    .sub-container {
-        padding: $padding;
-        border-radius: $border-radius;
-        box-shadow: $box-shadow;
-        width: 500px;
+    .auth-card {
+        background: white;
+        width: 100%;
+        max-width: 450px; // Ancho máximo elegante
+        padding: 40px;
+        border-radius: $radius-md;
+        box-shadow: $shadow-md; // Sombra profesional
+        border-top: 5px solid $primary; // Detalle de marca superior
 
-        .form-Login,
-        .form-Register {
-            margin-block: $margin-L;
+        h2 {
+            color: $secondary;
+            font-weight: 800;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        // Estilos de los Inputs
+        .form-label {
+            color: $secondary;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+            color: $primary; // Iconos en color terracota
+        }
+
+        .form-control {
+            border-left: none; // Se une visualmente con el icono
+            padding: 12px;
+            font-size: 0.95rem;
+            
+            &:focus {
+                border-color: $primary; // Borde terracota al escribir
+                box-shadow: 0 0 0 4px rgba($primary, 0.1); // Halo suave
+            }
+        }
+
+        // Enlace de "Regístrate aquí"
+        a {
+            color: $primary;
+            font-weight: 600;
+            
+            &:hover {
+                color: $primary-hover;
+                text-decoration: underline;
+            }
         }
     }
 }

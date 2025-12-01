@@ -1,96 +1,149 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:insert="~{_layout :: html(content=~{::content})}">
-<head>
-    <!-- NUEVO: Estas etiquetas guardan el token de seguridad CSRF -->
-    <!-- Thymeleaf las llenará automáticamente con los valores correctos -->
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    
-    <script src="https://checkout.culqi.com/js/v4"></script>
-</head>
+<!-- EL HEAD AQUÍ SE IGNORA PORQUE EL LAYOUT PONE EL SUYO -->
 <body>
-<div th:fragment="content">
-    <div class="container py-4">
-        <h1>Finalizar Compra</h1>
-        <p>Estás a un paso de completar tu pedido.</p>
-        
-        <div th:if="${errorPedido}" class="alert alert-danger" role="alert" th:text="${errorPedido}"></div>
-        <div id="frontend-error" class="alert alert-danger d-none" role="alert"></div>
 
-        <div class="row">
+<div th:fragment="content">
+    <div class="container py-5 checkout-page">
+        
+        <!-- Breadcrumb -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/carrito}" class="text-decoration-none text-muted">Carrito</a></li>
+                        <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">Finalizar Compra</li>
+                    </ol>
+                </nav>
+                <h2 class="fw-bold text-secondary">Finalizar Compra</h2>
+                <p class="text-muted">Completa tus datos de envío para procesar el pago.</p>
+            </div>
+        </div>
+        
+        <!-- Alertas -->
+        <div th:if="${errorPedido}" class="alert alert-danger shadow-sm border-0" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> <span th:text="${errorPedido}"></span>
+        </div>
+        <div id="frontend-error" class="alert alert-danger d-none shadow-sm border-0" role="alert"></div>
+
+        <div class="row g-5">
+            <!-- COLUMNA IZQUIERDA: FORMULARIO -->
             <div class="col-lg-7">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h4>Información de Envío</h4>
-                        <form id="checkoutForm">
-                            <div class="mb-3">
-                                <label for="direccionEnvio" class="form-label">Dirección Completa</label>
-                                <input type="text" id="direccionEnvio" name="direccionEnvio" class="form-control" required>
+                <div class="checkout-form-card">
+                    <h4><i class="bi bi-geo-alt-fill me-2 text-primary"></i>Datos de Envío</h4>
+                    
+                    <!-- ID IMPORTANTE: checkoutForm -->
+                    <form id="checkoutForm">
+                        <!-- Dirección -->
+                        <div class="form-floating mb-4">
+                            <input type="text" id="direccionEnvio" name="direccionEnvio" class="form-control" placeholder="Dirección" required>
+                            <label for="direccionEnvio">Dirección Completa (Calle, Nro, Distrito)</label>
+                        </div>
+                        
+                        <hr class="my-4 opacity-10">
+
+                        <h4><i class="bi bi-credit-card-2-front-fill me-2 text-primary"></i>Método de Pago</h4>
+                        
+                        <div class="payment-info d-flex align-items-center">
+                            <i class="bi bi-shield-check"></i>
+                            <div>
+                                <h6 class="mb-1 fw-bold">Pago Seguro con Culqi</h6>
+                                <p class="mb-0 small text-muted">Aceptamos todas las tarjetas, Yape y PagoEfectivo.</p>
                             </div>
-                            <hr>
-                            <h4>Información de Pago</h4>
-                            <p class="text-muted">Pago seguro con Culqi.</p>
-                            <div class="d-grid mt-4">
-                                <button type="submit" id="btnPagar" class="btn btn-success btn-lg">
-                                    <span id="btnText">Pagar y Realizar Pedido</span>
-                                    <span id="btnLoading" class="spinner-border spinner-border-sm d-none"></span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        
+                        <div class="d-grid mt-5">
+                            <button type="submit" id="btnPagar" class="btn btn-lg btn-success text-white fw-bold">
+                                <span id="btnText">Pagar y Realizar Pedido</span>
+                                <span id="btnLoading" class="spinner-border spinner-border-sm d-none"></span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
             
+            <!-- COLUMNA DERECHA: RESUMEN -->
             <div class="col-lg-5">
-                <div class="card shadow-sm">
+                <div class="checkout-summary-card">
+                    <div class="card-header text-center">
+                        Resumen de tu Pedido
+                    </div>
                     <div class="card-body">
-                        <h4>Tu Pedido</h4>
-                        <ul class="list-group list-group-flush" th:if="${carrito != null}">
-                            <li th:each="item : ${carrito.items}" class="list-group-item d-flex justify-content-between lh-sm">
-                                <div>
-                                    <h6 class="my-0" th:text="${item.nombreProducto}">Producto</h6>
-                                    <small class="text-muted" th:text="|${item.cantidad} x S/ ${#numbers.formatDecimal(item.precioUnitario, 1, 'COMMA', 2, 'POINT')}|"></small>
+                        <!-- Lista pequeña -->
+                        <div class="mini-product-list" th:if="${carrito != null}">
+                            <div th:each="item : ${carrito.items}" class="list-group-item d-flex align-items-center">
+                                <div class="position-relative me-3">
+                                    <img th:src="${item.urlImagen != null ? item.urlImagen : 'https://via.placeholder.com/60'}" 
+                                         width="60" height="60" class="object-fit-cover rounded" alt="Prod">
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary" 
+                                          th:text="${item.cantidad}">1</span>
                                 </div>
-                                <span class="text-muted" th:text="|S/ ${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}|"></span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between fw-bold fs-5">
-                                <span>Total (S/)</span>
-                                <strong class="text-success" th:text="${#numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}"></strong>
-                            </li>
-                        </ul>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 text-dark small fw-bold" th:text="${item.nombreProducto}">Producto</h6>
+                                    <small class="text-muted" th:text="|Talla: ${item.nombreTalla}|">Talla</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fw-bold text-secondary" th:text="|S/ ${#numbers.formatDecimal(item.subtotal, 1, 'COMMA', 2, 'POINT')}|"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Totales -->
+                        <div class="total-section">
+                            <div class="total-row final">
+                                <span>Total a Pagar</span>
+                                <span th:text="|S/ ${#numbers.formatDecimal(carrito.total, 1, 'COMMA', 2, 'POINT')}|">S/ 0.00</span>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- CORRECCIÓN: LA LIBRERÍA SE CARGA AQUÍ, DENTRO DEL FRAGMENTO -->
+    <!-- ============================================================ -->
     <script src="https://checkout.culqi.com/js/v4"></script>
 
+    <!-- LÓGICA DE PAGO -->
     <script th:inline="javascript">
-        Culqi.publicKey = /*[[${culqiPublicKey}]]*/ '';
-        
-        // NUEVO: Obtener el token CSRF de las etiquetas meta del head
-        // (Si usas un layout, asegúrate que las meta tags se rendericen, 
-        // si no, JavaScript fallará al no encontrarlas)
+        // 1. Esperamos a que la librería cargue (aunque al estar abajo debería estar lista)
+        // Recuperamos tokens del Layout (están en el head del layout, así que sí son accesibles)
         const csrfTokenMeta = document.querySelector('meta[name="_csrf"]');
         const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
         
+        // Configuración Culqi
+        // Asegúrate de que culqiPublicKey no sea null en el controlador
+        const publicKey = /*[[${culqiPublicKey}]]*/ '';
+        
+        if(window.Culqi){
+            Culqi.publicKey = publicKey;
+            Culqi.options({
+                style: {
+                    logo: 'https://cdn-icons-png.flaticon.com/512/3081/3081559.png', 
+                    maincolor: '#C05640' // Color Terracota
+                }
+            });
+        } else {
+            console.error("La librería de Culqi no se cargó correctamente.");
+            document.getElementById('frontend-error').textContent = "Error al cargar la pasarela de pagos. Refresca la página.";
+            document.getElementById('frontend-error').classList.remove('d-none');
+        }
+
         const form = document.getElementById('checkoutForm');
         const btnPagar = document.getElementById('btnPagar');
         const btnText = document.getElementById('btnText');
         const btnLoading = document.getElementById('btnLoading');
         const errorAlert = document.getElementById('frontend-error');
 
-        Culqi.options({
-            style: {
-                logo: 'https://cdn-icons-png.flaticon.com/512/3081/3081559.png', 
-                maincolor: '#198754'
-            }
-        });
-
+        // EVENTO SUBMIT
         form.addEventListener('submit', async function(e) {
-            e.preventDefault();
+            e.preventDefault(); // ¡ESTO EVITA LA RECARGA!
+            
+            // UI Loading
             errorAlert.classList.add('d-none');
             btnPagar.disabled = true;
             btnText.textContent = "Procesando...";
@@ -98,41 +151,46 @@
 
             try {
                 const formData = new FormData(form);
-
-                // PREPARAR HEADERS CON EL TOKEN DE SEGURIDAD
+                
+                // Headers de seguridad
                 const headers = {};
                 if (csrfTokenMeta && csrfHeaderMeta) {
                     headers[csrfHeaderMeta.content] = csrfTokenMeta.content;
                 }
 
+                // 1. Llamada al Backend
                 const response = await fetch('/realizar-pedido', {
                     method: 'POST',
-                    headers: headers, // NUEVO: Enviamos el token aquí
+                    headers: headers,
                     body: formData
                 });
 
-                if (response.status === 403) {
-                    throw new Error("Error de seguridad (403). Recarga la página e intenta de nuevo.");
-                }
-
+                if (response.status === 403) throw new Error("Sesión expirada. Recarga la página.");
+                
                 const data = await response.json();
 
-                if (!response.ok) {
-                    throw new Error(data.error || 'Error en el servidor.');
+                if (!response.ok) throw new Error(data.error || 'Error en el servidor.');
+
+                console.log("Orden Creada:", data.culqiOrderId);
+
+                // 2. Abrir Culqi
+                if(window.Culqi) {
+                    Culqi.settings({
+                        title: 'Tienda Toke Inca',
+                        currency: 'PEN',
+                        amount: /*[[${carrito.total * 100}]]*/ 0, 
+                        order: data.culqiOrderId
+                    });
+
+                    Culqi.open();
+                    
+                    // Restaurar botón (esperando acción en popup)
+                    btnPagar.disabled = false;
+                    btnText.textContent = "Realizar Pedido";
+                    btnLoading.classList.add('d-none');
+                } else {
+                    throw new Error("La pasarela no está disponible.");
                 }
-
-                Culqi.settings({
-                    title: 'Tienda Toke',
-                    currency: 'PEN',
-                    amount: /*[[${carrito.total * 100}]]*/ 0, 
-                    order: data.culqiOrderId
-                });
-
-                Culqi.open();
-
-                btnPagar.disabled = false;
-                btnText.textContent = "Realizar Pedido";
-                btnLoading.classList.add('d-none');
 
             } catch (error) {
                 console.error(error);
@@ -144,13 +202,14 @@
             }
         });
 
+        // CALLBACK DE CULQI
         function culqi() {
             if (Culqi.token) { 
                 console.log("Token:", Culqi.token.id);
                 window.location.href = "/?payment_success=true"; 
             } else if (Culqi.order) { 
                 console.log("Orden:", Culqi.order);
-                window.location.href = "/?payment_success=true";
+                window.location.href = "/?payment_success=true"; 
             } else {
                 if(Culqi.error){
                     console.error(Culqi.error.user_message);

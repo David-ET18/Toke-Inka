@@ -1,14 +1,79 @@
 @import "variables";
 
-.carousel{
-    width: 100%;
-    .carousel-inner{
-        .carousel-item{
-            img{
-                object-fit: cover;
+.carousel {
+    position: relative;
+    box-shadow: $shadow-md; // Sombra profesional definida en variables
+    border-bottom: 5px solid $accent; // Línea dorada de identidad de marca
+
+    .carousel-inner {
+        .carousel-item {
+            // Usamos altura relativa a la ventana (60% del alto)
+            // pero con un mínimo para que no desaparezca en móviles
+            height: 60vh; 
+            min-height: 400px; 
+            background-color: $secondary; // Fondo oscuro mientras carga la imagen
+
+            img {
                 width: 100%;
-                max-height: 500px;
+                height: 100%;
+                object-fit: cover; // Corta la imagen para llenar el espacio sin deformar
+                object-position: center;
+                
+                // Oscurece la imagen un 10% para que el Navbar y textos resalten
+                filter: brightness(0.9); 
+                transition: transform 10s ease; // Efecto zoom muy lento (opcional, se ve elegante)
+            }
+
+            // Efecto sutil: La imagen hace un zoom lento cuando está activa
+            &.active img {
+                transform: scale(1.05);
             }
         }
+    }
+
+    // Estilizar las flechas de navegación
+    .carousel-control-prev, 
+    .carousel-control-next {
+        width: 5%; // Zona de clic más estrecha
+        opacity: 0.5;
+        transition: all 0.3s ease;
+
+        &:hover {
+            opacity: 1;
+            background: rgba(0,0,0,0.1); // Fondo sutil al pasar el mouse
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5)); // Sombra al icono de la flecha
+        }
+    }
+
+    // Indicadores (los puntitos o rayitas abajo)
+    .carousel-indicators {
+        button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%; // Redondos
+            background-color: transparent;
+            border: 2px solid white;
+            margin: 0 5px;
+            opacity: 0.6;
+
+            &.active {
+                background-color: $accent; // Dorado cuando está activo
+                border-color: $accent;
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+    }
+}
+
+// Ajuste para móviles
+@media (max-width: 768px) {
+    .carousel .carousel-inner .carousel-item {
+        height: 50vh; // Un poco más bajo en celulares
+        min-height: 300px;
     }
 }

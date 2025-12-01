@@ -1,48 +1,153 @@
 @import "variables";
 
 .container-prod-details {
-    padding: $padding;
-    display: flex;
-    flex-direction: row;
-    border-radius: $border-radius;
-    box-shadow: $box-shadow-L;
-    background-color: $glass-color;
-    gap: $gap;
+    display: grid;
+    grid-template-columns: 1fr 1fr; // Dos columnas iguales en escritorio
+    gap: 40px;
+    background: white;
+    padding: 40px;
+    border-radius: $radius-md;
+    box-shadow: $shadow-sm;
+    margin-bottom: 40px;
 
-    .container {
-        background-color: blue($color: #000000);
-        flex: 1;
-    }
-
-    .container:nth-child(1) {
-        height: 500px;
-        width: 500px;
-        background-color: $color-secundario;
-        border-radius: $border-radius;
+    // Columna Izquierda: Imagen
+    .img-container {
+        width: 100%;
+        background-color: #f8f9fa;
+        border-radius: $radius-md;
+        overflow: hidden;
+        aspect-ratio: 1/1; // Cuadrado
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         img {
-            object-fit: contain;
-            height: 500px;
-            width: 500px;
-            border-radius: $border-radius;
-        }
-    }
-
-    .container:nth-child(2) {
-        border-radius: $border-radius;
-        padding: $padding;
-        background-color: $color-secundario;
-
-        form {
-            div {
-                div {
-                    .btn-agregarAlCarrito {
-                        width: 100%;
-                        @include estilo-boton;
-                    }
-                }
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; // Muestra la imagen completa
+            transition: transform 0.3s;
+            
+            &:hover {
+                transform: scale(1.02);
             }
         }
     }
 
+    // Columna Derecha: Información
+    .info-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: $secondary;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background-color: rgba($primary, 0.1);
+            color: $primary;
+            padding: 5px 12px;
+            border-radius: $radius-pill;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            width: fit-content;
+            margin-bottom: 1rem;
+        }
+
+        .price-tag {
+            font-size: 2rem;
+            color: $primary;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        // Formulario de compra
+        form {
+            background-color: $bg-body; // Fondo suave
+            padding: 20px;
+            border-radius: $radius-md;
+            border: 1px solid rgba(0,0,0,0.05);
+
+            label {
+                font-weight: 600;
+                margin-bottom: 5px;
+                color: $secondary;
+            }
+
+            .form-select, .form-control {
+                border-radius: $radius-sm;
+                border: 1px solid #ddd;
+                padding: 10px;
+                
+                &:focus {
+                    border-color: $primary;
+                    box-shadow: 0 0 0 3px rgba($primary, 0.2);
+                }
+            }
+
+            .btn-agregarAlCarrito {
+                width: 100%;
+                background-color: $secondary; // Botón oscuro para contraste
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: $radius-pill;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: $transition-std;
+                margin-top: 10px;
+
+                i { margin-right: 8px; }
+
+                &:hover {
+                    background-color: $primary; // Cambia a terracota al hover
+                    transform: translateY(-2px);
+                    box-shadow: $shadow-md;
+                }
+            }
+        }
+    }
+}
+
+// Estilos para la sección de Reseñas (Opcional, para que no se vea feo)
+.reviews-section {
+    background: white;
+    padding: 30px;
+    border-radius: $radius-md;
+    box-shadow: $shadow-sm;
+
+    h2 { border-bottom: 2px solid $bg-body; padding-bottom: 10px; margin-bottom: 20px; }
+    
+    .list-group-item {
+        border: none;
+        border-bottom: 1px solid #eee;
+        padding: 20px 0;
+        
+        &:last-child { border-bottom: none; }
+    }
+}
+
+// Responsive: En móvil pasa a 1 columna
+@media (max-width: 992px) {
+    .container-prod-details {
+        grid-template-columns: 1fr; // Una sola columna
+        gap: 20px;
+        padding: 20px;
+        
+        .img-container {
+            height: auto;
+        }
+    }
 }

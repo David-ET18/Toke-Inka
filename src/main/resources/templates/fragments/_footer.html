@@ -1,12 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <body>
-    <footer class="footer mt-auto py-3" th:fragment="footer">
-        <div class="container text-center">
-            <span class="text-muted">&copy; 2025 Toke Inca. Todos los derechos reservados.</span>
+    <!-- Se usa la clase 'footer-toke' del nuevo SASS -->
+    <footer th:fragment="footer" class="footer-toke mt-auto">
+        <div class="container">
+            <div class="row g-4">
+                
+                <!-- Columna 1: Marca -->
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase mb-4 fw-bold text-accent">Toke Inka</h5>
+                    <p>
+                        Fusionamos la herencia milenaria con la moda contemporánea. 
+                        Prendas con historia, diseño y calidad premium.
+                    </p>
+                    <div class="social-icons mt-4">
+                        <a href="#" class="me-3"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="me-3"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="me-3"><i class="bi bi-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Navegación -->
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase mb-4 fw-bold">Tienda</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><a th:href="@{/}" class="footer-link">Inicio</a></li>
+                        <li><a th:href="@{/productos}" class="footer-link">Catálogo</a></li>
+                        <li><a href="#" class="footer-link">Ofertas</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Información -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase mb-4 fw-bold">Ayuda</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="#" class="footer-link">Guía de Tallas</a></li>
+                        <li><a href="#" class="footer-link">Envíos</a></li>
+                        <li><a href="#" class="footer-link">Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 4: Contacto -->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase mb-4 fw-bold">Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2 text-accent"></i> Lima, Perú</li>
+                        <li class="mb-2"><i class="bi bi-whatsapp me-2 text-accent"></i> +51 999 999 999</li>
+                        <li class="mb-2"><i class="bi bi-envelope me-2 text-accent"></i> hola@tokeinka.com</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="text-center p-3 mt-4 border-top border-secondary">
+            <small class="text-white-50">
+                &copy; 2025 Toke Inka. Todos los derechos reservados.
+            </small>
         </div>
     </footer>
 </body>
-
 </html>

@@ -1,0 +1,152 @@
+@import "variables";
+
+.cart-view {
+    // 1. Estado Vacío
+    .empty-cart-container {
+        background: white;
+        border-radius: $radius-md;
+        box-shadow: $shadow-sm;
+        padding: 4rem 2rem;
+        text-align: center;
+        border: 1px dashed rgba($secondary, 0.2);
+
+        i {
+            color: rgba($primary, 0.5);
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            color: $secondary;
+            font-weight: 800;
+        }
+    }
+
+    // 2. Lista de Items
+    .cart-item-row {
+        background: white;
+        border-radius: $radius-md;
+        border: 1px solid rgba(0,0,0,0.03); // Borde casi invisible
+        box-shadow: $shadow-sm;
+        transition: $transition-std;
+        overflow: hidden;
+        margin-bottom: 20px;
+
+        &:hover {
+            transform: translateY(-3px);
+            box-shadow: $shadow-md;
+            border-color: rgba($primary, 0.2);
+        }
+
+        .img-fluid {
+            border-radius: $radius-sm;
+            background-color: #f8f9fa;
+        }
+
+        .item-title {
+            color: $secondary;
+            font-weight: 700;
+            text-decoration: none;
+            
+            &:hover { color: $primary; }
+        }
+
+        // Control de Cantidad (Estilo Píldora)
+        .quantity-control {
+            border: 1px solid #dee2e6;
+            border-radius: $radius-pill;
+            overflow: hidden;
+            display: flex;
+            width: fit-content;
+
+            .btn {
+                border: none;
+                border-radius: 0;
+                padding: 5px 15px;
+                background: white;
+                color: $secondary;
+                
+                &:hover {
+                    background: $bg-body;
+                    color: $primary;
+                }
+            }
+
+            .quantity-input {
+                border: none;
+                background: white;
+                width: 50px;
+                text-align: center;
+                font-weight: 700;
+                color: $secondary;
+                padding: 5px 0;
+                
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+        }
+
+        .btn-delete {
+            color: #999;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: $transition-std;
+            
+            &:hover {
+                color: $danger;
+                background-color: rgba($danger, 0.1);
+                border-radius: $radius-pill;
+            }
+        }
+    }
+
+    // 3. Resumen de Pago (Sticky)
+    .summary-card {
+        background: white;
+        border-radius: $radius-md;
+        padding: 30px;
+        box-shadow: $shadow-md;
+        border-top: 5px solid $primary; // Detalle de marca
+        position: sticky;
+        top: 100px; // Se queda pegado al bajar
+
+        h4 {
+            font-weight: 800;
+            color: $secondary;
+            letter-spacing: -0.5px;
+        }
+
+        .list-group-item {
+            border: none;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background: transparent;
+            font-size: 1rem;
+            color: #666;
+
+            &:last-child {
+                border-bottom: none;
+                color: $secondary;
+                font-size: 1.2rem;
+            }
+        }
+
+        .btn-checkout {
+            background-color: $secondary;
+            border: none;
+            border-radius: $radius-pill;
+            padding: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            transition: $transition-std;
+
+            &:hover {
+                background-color: $primary;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba($primary, 0.4);
+            }
+        }
+    }
+}

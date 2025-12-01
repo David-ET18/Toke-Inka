@@ -1,47 +1,72 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" th:insert="~{_layout :: html(content=~{::content})}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" 
+      th:with="pageTitle='Catálogo | Toke Inca'"
+      th:insert="~{_layout :: html(content=~{::content})}">
 
 <body>
     <div th:fragment="content">
-        <div class="sub-main">
-            <div class="viewProductos">
-                <h1 class="mb-4">Nuestro Catálogo de Productos</h1>
-                <p class="lead">Explora todas nuestras prendas y encuentra tu estilo único.</p>
+        <div class="sub-main"> <!-- Mantenemos tu clase contenedora -->
+            
+            <div class="viewProductos container py-4"> <!-- Agregué container y padding -->
+                
+                <!-- Título Estilizado -->
+                <div class="text-center mb-5">
+                    <h2 id="product-section-title">Nuestro Catálogo</h2>
+                    <p class="lead text-muted">Explora todas nuestras prendas y encuentra tu estilo único.</p>
+                </div>
 
+                <!-- Alerta: No hay productos -->
                 <div th:if="${productos == null or #lists.isEmpty(productos)}">
-                    <div class="alert alert-warning text-center">
-                        <h4>¡Vaya!</h4>
-                        <p>Parece que no hay productos disponibles en este momento. Vuelve a intentarlo más tarde.</p>
+                    <div class="alert alert-warning text-center shadow-sm border-0">
+                        <h4><i class="bi bi-search me-2"></i>¡Vaya!</h4>
+                        <p class="mb-0">Parece que no hay productos disponibles en este momento.</p>
                     </div>
                 </div>
 
-                <div th:if="${not #lists.isEmpty(productos)}" class="container-products">
+                <!-- Lista de Productos -->
+                <!-- AQUÍ ESTÁ EL ARREGLO: Agregamos las clases 'row' y 'row-cols-...' -->
+                <div th:if="${not #lists.isEmpty(productos)}" 
+                     class="container-products row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                    
                     <!-- Iteramos sobre cada producto -->
                     <div class="col" th:each="producto : ${productos}">
-                        <div class="product-card">
-                            <a th:href="@{/producto/{id}(id=${producto.id})}" class="text-decoration-none text-dark">
-                                <div class="container-img">
-                                    <img th:src="${producto.urlImagen}" class="img-prod" th:alt="${producto.nombre}">
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title" th:text="${producto.nombre}">Nombre Producto</h5>
-                                    <p class="card-text text-muted" th:text="${producto.nombreCategoria}">Categoría</p>
-                                    <p class="card-text fs-5 fw-bold"
+                        <div class="product-card h-100"> <!-- h-100 para misma altura -->
+                            
+                            <!-- Contenedor Imagen (Cuadrado perfecto) -->
+                            <div class="container-img position-relative">
+                                <!-- Enlace en la imagen -->
+                                <a th:href="@{/producto/{id}(id=${producto.id})}" class="d-block w-100 h-100">
+                                    <img th:src="${producto.urlImagen != null ? producto.urlImagen : 'https://via.placeholder.com/300x300?text=Sin+Imagen'}" 
+                                         class="img-prod" 
+                                         th:alt="${producto.nombre}">
+                                </a>
+                            </div>
+
+                            <div class="card-body d-flex flex-column text-center p-3">
+                                <h5 class="card-title fw-bold mb-1">
+                                    <a th:href="@{/producto/{id}(id=${producto.id})}" class="text-decoration-none text-secondary stretched-link-title" th:text="${producto.nombre}">
+                                        Nombre Producto
+                                    </a>
+                                </h5>
+                                <p class="card-text text-muted small text-uppercase mb-3" th:text="${producto.nombreCategoria}">Categoría</p>
+                                
+                                <div class="mt-auto">
+                                    <p class="card-text fs-4 fw-bold text-primary mb-0"
                                         th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 'COMMA', 2, 'POINT')}|">
-                                        S/
-                                        0.00</p>
+                                        S/ 0.00
+                                    </p>
                                 </div>
-                            </a>
-                            <div class="card-footer">
-                                <a th:href="@{/producto/{id}(id=${producto.id})}" class="btn btn-primary w-100">Ver
-                                    Detalles</a>
+                            </div>
+
+                            <div class="card-footer bg-white border-0 text-center pb-4">
+                                 <a th:href="@{/producto/{id}(id=${producto.id})}" class="btn-detalle">Ver Detalles</a>
                             </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
 </body>
-
 </html>

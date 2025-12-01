@@ -2,36 +2,90 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <style>
-        /* Estilos inline para máxima compatibilidad con clientes de correo */
-        body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; }
-        .header { text-align: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
-        .content { padding: 20px 0; }
-        .footer { text-align: center; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #777; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 8px; text-align: left; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Pedido</title>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h2>¡Gracias por tu compra en Toke Inca!</h2>
-        </div>
-        <div class="content">
-            <p th:text="|Hola ${pedido.nombreCliente},|">Hola Cliente,</p>
-            <p>Hemos recibido tu pedido y ya estamos preparándolo. Adjunto encontrarás la boleta de tu compra en formato PDF.</p>
-            <h3>Resumen de tu Pedido</h3>
-            <p>
-                <strong>Número de Pedido:</strong> <span th:text="${pedido.id}"></span><br>
-                <strong>Fecha:</strong> <span th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}"></span><br>
-                <strong>Total:</strong> <strong th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 2, 'COMMA')}|"></span>
-            </p>
-            <p>Puedes ver los detalles de tu pedido en cualquier momento desde la sección "Mis Pedidos" en nuestra web.</p>
-        </div>
-        <div class="footer">
-            <p>&copy; 2025 Toke Inca. Todos los derechos reservados.</p>
-        </div>
-    </div>
+<body style="margin: 0; padding: 0; background-color: #FDFBF7; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+
+    <!-- CONTENEDOR PRINCIPAL (Fondo Crema) -->
+    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #FDFBF7; padding: 40px 0;">
+        <tr>
+            <td align="center">
+                
+                <!-- TARJETA DEL CORREO (Blanca con Sombra) -->
+                <table role="presentation" width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border: 1px solid #eeeeee;">
+                    
+                    <!-- 1. ENCABEZADO (Azul Marino) -->
+                    <tr>
+                        <td style="background-color: #1D2D44; padding: 35px 20px; text-align: center;">
+                            <h1 style="color: #E9B44C; margin: 0; font-size: 24px; letter-spacing: 3px; text-transform: uppercase; font-weight: 800;">TOKE INKA</h1>
+                            <p style="color: rgba(255,255,255,0.7); margin: 5px 0 0 0; font-size: 12px; letter-spacing: 1px;">MODA CON IDENTIDAD</p>
+                        </td>
+                    </tr>
+
+                    <!-- 2. CUERPO DEL MENSAJE -->
+                    <tr>
+                        <td style="padding: 40px 40px 20px 40px;">
+                            <!-- Saludo en color Terracota -->
+                            <h2 style="color: #C05640; margin-top: 0; font-size: 22px;" th:text="|Hola ${pedido.nombreCliente},|">Hola Cliente,</h2>
+                            
+                            <p style="color: #555555; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+                                ¡Muchas gracias por tu compra! Hemos recibido tu pedido exitosamente y ya estamos preparándolo para enviártelo.
+                            </p>
+                            
+                            <p style="color: #666666; font-size: 14px; margin-bottom: 5px;">
+                                Adjunto a este correo encontrarás tu <strong>boleta electrónica</strong> en formato PDF.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- 3. CAJA DE RESUMEN (Gris Claro) -->
+                    <tr>
+                        <td style="padding: 0 40px;">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #F8F9FA; border-radius: 8px; border: 1px solid #E0E0E0;">
+                                <tr>
+                                    <td colspan="2" style="padding: 20px; border-bottom: 2px solid #ffffff;">
+                                        <h3 style="margin: 0; color: #1D2D44; font-size: 16px; text-transform: uppercase;">Resumen del Pedido</h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px 20px; color: #777777; font-size: 14px; font-weight: bold;">Número de Pedido:</td>
+                                    <td style="padding: 15px 20px; color: #333333; font-size: 14px; text-align: right;" th:text="${pedido.id}">#000</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 15px 20px; color: #777777; font-size: 14px; font-weight: bold; border-top: 1px solid #eeeeee;">Fecha:</td>
+                                    <td style="padding: 15px 20px; color: #333333; font-size: 14px; text-align: right; border-top: 1px solid #eeeeee;" th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy')}">01/01/2025</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 20px; background-color: #1D2D44; color: #ffffff; font-size: 16px; font-weight: bold; border-bottom-left-radius: 6px;">TOTAL PAGADO</td>
+                                    <td style="padding: 20px; background-color: #1D2D44; color: #E9B44C; font-size: 20px; font-weight: bold; text-align: right; border-bottom-right-radius: 6px;" th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 2, 'COMMA')}|">S/ 0.00</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- 4. FOOTER Y ENLACE -->
+                    <tr>
+                        <td style="padding: 30px 40px; text-align: center;">
+                            <p style="color: #888888; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">
+                                Puedes ver el estado detallado de tu envío ingresando a tu cuenta en nuestra web.
+                            </p>
+                            
+                            <a href="http://localhost:8176/mis-pedidos" style="display: inline-block; background-color: #C05640; color: #ffffff; text-decoration: none; font-weight: bold; padding: 12px 25px; border-radius: 50px; font-size: 14px;">Ir a Mis Pedidos</a>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="background-color: #eeeeee; padding: 20px; text-align: center; font-size: 12px; color: #999999;">
+                            <p style="margin: 0;">&copy; 2025 Toke Inka. Todos los derechos reservados.</p>
+                            <p style="margin: 5px 0 0 0;">Lima, Perú</p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
 </body>
 </html>
