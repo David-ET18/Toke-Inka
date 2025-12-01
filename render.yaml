@@ -1,7 +1,6 @@
 version: 1
 
 services:
-  # Configuración del servicio Web
   - type: web
     name: toke-inka
     env: docker
@@ -9,21 +8,14 @@ services:
     branch: main
     repo: https://github.com/David-ET18/Toke-Inka
     
-    # Configuración de salud:
-    # Render pingueará la raíz (/) para saber si la app ya arrancó.
-    # Le damos 180 segundos (3 min) de espera inicial porque Spring Boot puede tardar en iniciar.
     healthCheckPath: /
     initialDelaySeconds: 180
     
-    # Variables de Entorno:
-    # "sync: false" significa que Render sabe que la variable es necesaria,
-    # pero NO escribimos el valor aquí por seguridad.
-    # Render te mostrará un formulario en su web para que pegues los valores reales.
     envVars:
       - key: JAVA_VERSION
-        value: 17
+        value: "17"  # <--- CORREGIDO: Ahora tiene comillas
       
-      # --- BASE DE DATOS (Clever Cloud o la que uses) ---
+      # --- BASE DE DATOS ---
       - key: DB_URL
         sync: false
       - key: DB_USERNAME
@@ -31,13 +23,13 @@ services:
       - key: DB_PASSWORD
         sync: false
         
-      # --- PASARELA DE PAGO CULQI ---
+      # --- CULQI ---
       - key: CULQI_PUBLIC_KEY
         sync: false
       - key: CULQI_SECRET_KEY
         sync: false
         
-      # --- CORREO GMAIL ---
+      # --- GMAIL ---
       - key: MAIL_USERNAME
         sync: false
       - key: MAIL_PASSWORD
