@@ -8,12 +8,12 @@ services:
     branch: main
     repo: https://github.com/David-ET18/Toke-Inka
     
+    # Solo dejamos la ruta. Render esperará automáticamente hasta que responda.
     healthCheckPath: /
-    initialDelaySeconds: 180
     
     envVars:
       - key: JAVA_VERSION
-        value: "17"  # <--- CORREGIDO: Ahora tiene comillas
+        value: "17"
       
       # --- BASE DE DATOS ---
       - key: DB_URL
