@@ -1,43 +1,44 @@
-# Define la versión de la especificación de Render Blueprint.
 version: 1
 
-# Lista de servicios a crear. En este caso, solo uno: nuestra aplicación.
 services:
-  # Un servicio de tipo 'web' que recibe tráfico de internet.
+  # Configuración del servicio Web
   - type: web
-    # Nombre del servicio en el dashboard de Render.
-    name: toke-inka-app
-    # Le decimos a Render que use el entorno Docker para construir.
+    name: toke-inka
     env: docker
-    # La URL de tu repositorio de GitHub.
-    repo: https://github.com/David-ET18/Toke-Inka
-    # La rama que Render observará. Cuando subas cambios a esta rama, se redesplegará.
-    # Puedes cambiarlo a 'v2.1-actions' si quieres desplegar esa rama.
+    plan: free
     branch: main
-    # Opcional pero recomendado: Una comprobación de salud para que Render sepa si tu app está viva.
-    healthCheck:
-      path: /
-      initialDelaySeconds: 60 # Dale tiempo a Spring para que arranque
-    # Variables de entorno. Render te pedirá los valores de los "secrets" la primera vez.
+    repo: https://github.com/David-ET18/Toke-Inka
+    
+    # Configuración de salud:
+    # Render pingueará la raíz (/) para saber si la app ya arrancó.
+    # Le damos 180 segundos (3 min) de espera inicial porque Spring Boot puede tardar en iniciar.
+    healthCheckPath: /
+    initialDelaySeconds: 180
+    
+    # Variables de Entorno:
+    # "sync: false" significa que Render sabe que la variable es necesaria,
+    # pero NO escribimos el valor aquí por seguridad.
+    # Render te mostrará un formulario en su web para que pegues los valores reales.
     envVars:
-      # Perfil de Spring: Activa la configuración de producción.
-      - key: SPRING_PROFILES_ACTIVE
-        value: production
-      # URL de la base de datos de Railway.
-      - key: SPRING_DATASOURCE_URL
-        fromSecret: RAILWAY_DB_URL # Render te pedirá que crees un "Secret" con este nombre.
-      # Usuario de la base de datos.
-      - key: SPRING_DATASOURCE_USERNAME
-        fromSecret: RAILWAY_DB_USER
-      # Contraseña de la base de datos.
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromSecret: RAILWAY_DB_PASSWORD
-      # Correo de Gmail.
-      - key: SPRING_MAIL_USERNAME
-        value: valentinohernandez27@gmail.com
-      # Contraseña de aplicación de Gmail.
-      - key: SPRING_MAIL_PASSWORD
-        fromSecret: GMAIL_APP_PASSWORD
-      # Access Token de PRODUCCIÓN de Mercado Pago.
-      - key: MERCADOPAGO_ACCESS_TOKEN
-        fromSecret: MERCADOPAGO_PROD_TOKEN
+      - key: JAVA_VERSION
+        value: 17
+      
+      # --- BASE DE DATOS (Clever Cloud o la que uses) ---
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+        
+      # --- PASARELA DE PAGO CULQI ---
+      - key: CULQI_PUBLIC_KEY
+        sync: false
+      - key: CULQI_SECRET_KEY
+        sync: false
+        
+      # --- CORREO GMAIL ---
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
